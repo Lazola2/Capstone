@@ -2,5 +2,14 @@ Time: 16:28
 Date: 2023/03/07
 
 Note
-1. Tomorrow, make sure that the put request is working
 2. Create frontend for the register page and make sure it works
+
+
+
+Note: 2023/03/08
+The put request was not working for the user
+-- because : it is checking if the password matches
+--- whereas you did not enter a password
+--- .: Enter a password on the body in order to continue with the put request for the user
+--- idea: When the user updates their details, prompt their password and pass it to the body as part 
+          of the payload that will be passed

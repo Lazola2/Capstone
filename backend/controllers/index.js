@@ -1,7 +1,7 @@
 import express from "express";
 import path from 'path'
 import bodyParser from "body-parser";
-import {User, Purchase, Course} from '../model/index.js'
+import {User, Cart, Course} from '../model/index.js'
 import { Router } from "express";
 
 // code to fix error: __dirname is not defined
@@ -13,8 +13,8 @@ const route = Router();
 
 // create all instances
 const user = new User();
+const cart = new Cart();
 const course = new Course();
-const purchase = new Purchase();
 
 // route to the home page
 route.get('/', (req, res) => {
@@ -78,20 +78,31 @@ route.delete('/item/:id', (req, res)=> {
     course.deleteCourse(req, res);
 });
 
-// purchase routes==============================================
-// Fetch all purchases
-route.get('/purchases', (req, res)=> {
-    purchase.fetchPurchases(req, res);
+// cart routes==============================================
+
+// Add a new item to the cart purchase
+route.post('/user/:id/cart', bodyParser.json(), (req, res)=> {
+    cart.addToCart(req, res);
 });
 
-// Fetch a single purchase
-route.get('/purchase/:id', (req, res) => {
-    purchase.fetchPurchase(req, res);
+// get all the carts for a specified user
+route.get('/user/:id/carts', bodyParser.json(), (req, res) => {
+    cart.fetchCart(req, res);
 });
 
-// Add a new purchase
-route.post('/purchases', bodyParser.json(), (req, res)=> {
-    purchase.createPurchase(req, res);
+// update a specified cart for a specified user
+route.put('/user/:uid/cart/:cid', bodyParser.json(), (req, res) => {
+    cart.updateCart(req, res);
+});
+
+// delete all carts for a specified user
+route.delete('/user/:id/cart', (req,res) => {
+    cart.deleteCarts(req, res);
+});
+
+// delete all carts for a specified user
+route.delete('/user/:uid/cart/:cid', (req,res) => {
+    cart.deleteCart(req, res);
 });
 
 export default route;

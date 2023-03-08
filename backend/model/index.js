@@ -14,7 +14,7 @@ export class User {
     login(req, res){
         const {email, user_password} = req.body;
         const qryStr = `
-            SELECT user_id, firstname, lastname, gender, user_role, email, user_password, profile_image, cart
+            SELECT user_id, firstname, lastname, gender, user_role, email, user_password, profile_image
             FROM Users
             WHERE email = '${email}';
         `;
@@ -108,7 +108,7 @@ export class User {
     // fetch all users
     fetchUsers(req,res) {
         const qryStr = `
-        SELECT user_id, firstname, lastname, gender, user_role, email, profile_image, cart
+        SELECT user_id, firstname, lastname, gender, user_role, email, profile_image
         FROM Users;`;
 
         db.query(qryStr, (err, data) => {
@@ -122,7 +122,7 @@ export class User {
     // fetch a single user
     fetchUser(req,res) {
         const qryStr = `
-        SELECT user_id, firstname, lastname, gender, user_role, email, profile_image, cart
+        SELECT user_id, firstname, lastname, gender, user_role, email, profile_image
         FROM Users
         WHERE user_id = ?`;
 
@@ -137,9 +137,12 @@ export class User {
     // update a user
     updateUser(req, res) {
         let data = req.body;
-        if( (data.user_password !== null) || (data.user_password !== undefined)){
+        console.log(data);
+
+        if((data.user_password !== null) || (data.user_password !== undefined)){
             data.user_password = hashSync(data.user_password, 15);
         }
+        
         const qryStr = `
             UPDATE Users
             SET ?
@@ -148,11 +151,11 @@ export class User {
         db.query(qryStr, [data, req.params.id], (err) => {
             if (err) throw err;
             res.status(200).json({
-                msg: "Client record has been updated."
+                msg: "User record has been updated."
             });
         });
-    }
 
+    }
 }
 
 // create a class for Courses
@@ -232,27 +235,48 @@ export class Course {
     }
 }
 
-export class Purchase {
-    // fetch all Vehicles
-    fetchPurchases(req, res){
-        const qryStr = `
-        SELECT purchase_id, user_id, course_id, purchase_date, total_price
-        FROM Purchase;`;
+export class Cart {
+    // add an item to the cart
+    async addToCart(req, res) {
+        // payload: data from the user
+        let detail = req.body;
+        console.log(detail);
 
-        db.query(qryStr, (err, data) => {
+        const qryStr = `INSERT INTO Cart SET ?`
+        db.query(qryStr, [detail, req.params.id], (err) => {
+            if (err) {
+                res.status(401).json({err});
+                return;
+            }
+            res.status(200).json({msg: 'Cart record has been saved.'});
+        });
+    }
+    
+    // update a specified cart for a specified user (using cart_id and user_id)
+    updateCart(req, res) {
+        let data = req.body;
+        const qryStr = `
+            UPDATE Cart
+            SET ?
+            WHERE (user_id = ?) AND (cart_id = ?);`
+
+        db.query(qryStr, [data, req.params.uid, req.params.cid], (err) => {
             if (err) throw err;
             res.status(200).json({
-                results: data
+                msg: "Cart record has been updated."
             });
         });
     }
 
-    // fetch Vehicle
-    fetchPurchase(req, res){
+    // fetch all items in the cart for a specific user
+    fetchCart(req,res) {
         const qryStr = `
-        SELECT purchase_id, user_id, course_id, purchase_date, total_price
-        FROM Purchases
-        WHERE purchase_id = ?;`;
+            SELECT cr.user_id, cr.cart_id, cr.status, cr.date, c.price, c.title, c.category, c.course_description, c.rating, c.image_link
+            FROM Cart cr 
+            INNER JOIN Courses c
+            USING (course_id)
+            WHERE user_id = ?;`;
+
         db.query(qryStr, [req.params.id], (err, data) => {
             if (err) throw err;
             res.status(200).json({
@@ -261,20 +285,31 @@ export class Purchase {
         });
     }
 
-    // create a Client
-    async createPurchase(req, res) {
-        // payload: data from the user
-        let detail = req.body;
-
-        // sql query
-        const qryStr = 'INSERT INTO Purchase SET ?;';
-        db.query(qryStr, [detail], err => {
-            if (err) {
-                res.status(401).json({err});
-                return;
-            }
-            res.status(201).json({msg: 'Purchase created successfully.'});
+    // delete all carts matching a specified user
+    deleteCarts(req, res) {
+        const qryStr = `
+            DELETE FROM Cart
+            WHERE user_id = ?;`
+        db.query(qryStr, [req.params.id], (err) => {
+            if (err) throw err;
+            res.status(200).json({
+                msg: 'Cart records have been removed successfully.'
+            });
         });
     }
+
+     // delete all carts matching a specified user
+     deleteCart(req, res) {
+        const qryStr = `
+            DELETE FROM Cart
+            WHERE (user_id = ?) AND (cart_id = ?);`
+        db.query(qryStr, [req.params.uid, req.params.cid], (err) => {
+            if (err) throw err;
+            res.status(200).json({
+                msg: 'Cart records have been removed successfully.'
+            });
+        });
+    }
+
 }
 
