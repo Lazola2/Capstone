@@ -240,10 +240,12 @@ export class Cart {
     async addToCart(req, res) {
         // payload: data from the user
         let detail = req.body;
+        detail.user_id = req.params.id;
+        console.log('start');
         console.log(detail);
-
+        console.log('end');
         const qryStr = `INSERT INTO Cart SET ?`
-        db.query(qryStr, [detail, req.params.id], (err) => {
+        db.query(qryStr, [detail], (err) => {
             if (err) {
                 res.status(401).json({err});
                 return;
