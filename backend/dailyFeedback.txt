@@ -1,0 +1,6 @@
+Time: 16:28
+Date: 2023/03/07
+
+Note
+1. Tomorrow, make sure that the put request is working
+2. Create frontend for the register page and make sure it works
