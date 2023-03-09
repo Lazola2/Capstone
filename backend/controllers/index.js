@@ -18,7 +18,9 @@ const course = new Course();
 
 // route to the home page
 route.get('/', (req, res) => {
-    res.status(200).sendFile(path.join(__dirname, '../view/index.html'))
+    let fullUrl = path.join(__dirname, '../view/index.html');
+    console.log(fullUrl);
+    res.status(200).sendFile(path.join(fullUrl));
 });
 
 // user routes==============================================
@@ -64,7 +66,7 @@ route.get('/item/:id', (req, res) => {
 });
 
 // Add a new course
-route.post('/item', bodyParser.json(), (req, res)=> {
+route.post('/items', bodyParser.json(), (req, res)=> {
     course.addCourse(req, res);
 });
 
