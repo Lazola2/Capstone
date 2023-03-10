@@ -3,6 +3,7 @@ import path from 'path'
 import bodyParser from "body-parser";
 import {User, Cart, Course} from '../model/index.js'
 import { Router } from "express";
+// import verifyAToken from '../middleware/AuthenticatedUser.js'
 
 // code to fix error: __dirname is not defined
 import { dirname } from "path";
@@ -18,9 +19,7 @@ const course = new Course();
 
 // route to the home page
 route.get('/', (req, res) => {
-    let fullUrl = path.join(__dirname, '../view/index.html');
-    console.log(fullUrl);
-    res.status(200).sendFile(path.join(fullUrl));
+    res.status(200).sendFile(path.join(__dirname, '../view/index.html'));
 });
 
 // user routes==============================================
@@ -30,7 +29,7 @@ route.post('/user', bodyParser.json(), (req, res) => {
 })
 
 // get all users
-route.get('/users', (req, res)=>{
+route.get('/users', /*verifyAToken,*/ (req, res)=>{
     user.fetchUsers(req, res);
 });
 
