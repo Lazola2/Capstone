@@ -17,8 +17,8 @@
         <div class="content d-flex pt-4 px-4 flex-column">
             <h2 class="mb-5">50 {{selectedCourse.toUpperCase()}} Courses<br>Beginner to Advanced</h2>
             <div class="buttons d-flex gap-2">
-                <button class="dark-btn btn-sign-in px-4 d-flex align-items-center justify-content-center gap-2">Sign in
-                    <i class="bi bi-box-arrow-in-right"></i>
+                <button @click.prevent="sendToLogin" class="dark-btn btn-sign-in px-4 d-flex align-items-center justify-content-center gap-2">
+                    Sign in<i class="bi bi-box-arrow-in-right"></i>
                 </button>
                 <button class="dark-btn btn-sign-up px-4">Sign up</button>
             </div>
@@ -29,6 +29,7 @@
     </section>
 </template>
 <script>
+import router from '@/router'
 export default {
     name: 'HomeView',
     data(){
@@ -47,12 +48,21 @@ export default {
             else {
                 this.counter = 0
             }   
+        },
+        sendToLogin(){
+            if (this.$store.state.loggedUser){
+                alert('logged in');
+            }
+            else {
+                router.push({name: 'account'});           
+            }
         }
     },
     created(){
         this.changeCourse()
         setInterval(this.changeCourse, 5000);
-    }
+    },
+    
 }
 </script>
 <style scoped>

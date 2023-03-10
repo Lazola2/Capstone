@@ -10,11 +10,14 @@
           <div class="collapse navbar-collapse d-flex justify-content-end" id="navbarNavDropdown">
             <ul class="navbar-nav d-flex gap-4">
                 <li><router-link to="/">Home</router-link></li>
-                <li v-if="loggedIn">Products</li>
+                <li v-if="loggedUser"><router-link to="/products">Products</router-link></li>
                 <li><router-link to="/account">Account</router-link></li>
                 <li><router-link to="/about">About</router-link></li>
                 <li>Contact</li>
-                <li v-if="loggedIn">Cart(0)</li>
+                <li v-if="loggedUser?.data.result.user_role === 'admin'">
+                    <router-link to="/admin">Admin</router-link>
+                </li>
+                <li v-if="loggedUser">Cart(0)</li>
             </ul>
           </div>
         </div>
@@ -23,12 +26,16 @@
 <script>
 export default {
     name: 'NavBar',
+    computed: {
+        loggedUser(){
+            return this.$store.state.loggedUser
+        }
+    },
     data(){
         return {
             cartItems: 0
         }
     },
-    props: ['loggedIn']
 }
 </script>
 <style scoped>
