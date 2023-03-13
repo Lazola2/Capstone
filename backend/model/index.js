@@ -163,7 +163,7 @@ export class Course {
     // fetch all courses
     fetchCourses(req, res) {
         const qryStr = `
-            SELECT course_id, title, category, course_description, price, image_link
+            SELECT course_id, title, category, course_description, price, rating, image_link
             FROM Courses;`;
         db.query(qryStr, (err, data) => {
             if (err) throw err;
@@ -176,7 +176,7 @@ export class Course {
     // fetch a single vehicle
     fetchCourse(req, res) {
         const qryStr = `
-            SELECT course_id, title, category, course_description, price, image_link
+            SELECT course_id, title, category, course_description, price, rating, image_link
             FROM Courses
             WHERE course_id = ?;`;
         db.query(qryStr, [req.params.id], (err, data ) => {
@@ -273,7 +273,7 @@ export class Cart {
     // fetch all items in the cart for a specific user
     fetchCart(req,res) {
         const qryStr = `
-            SELECT cr.user_id, cr.cart_id, cr.status, cr.date, c.price, c.title, c.category, c.course_description,  c.image_link
+            SELECT cr.user_id, cr.cart_id, cr.status, cr.date, c.price, c.title, c.category, c.course_description, c.rating, c.image_link
             FROM Cart cr 
             INNER JOIN Courses c
             USING (course_id)
