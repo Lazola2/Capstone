@@ -18,6 +18,12 @@
                     <router-link to="/admin">Admin</router-link>
                 </li>
                 <li v-if="loggedUser">Cart(0)</li>
+                <li v-if="loggedUser">
+                    {{ 
+                        `${loggedUser.data.result.firstname} ${loggedUser.data.result.lastname}`
+                    }}
+                    <i class="bi bi-person-circle"></i>
+                </li>
             </ul>
           </div>
         </div>

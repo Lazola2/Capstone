@@ -1,5 +1,6 @@
 <template>
     <section class="account">
+        
         <div class="alert alert-dark alert-dismissible fade show position-fixed w-100" role="alert" v-if="this.loggedIn">
             User successfully logged in.
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -31,13 +32,13 @@
             </div>
         </div>
 
-        <div class="register d-flex flex-row-reverse" v-else-if="!this.showSignIn">
+        <div class="register d-flex flex-row-reverse" v-else-if="this.showRegister && !this.showSignIn">
             <div class="right-side">
                 <form class="h-100 w-100 d-flex flex-column gap-2 align-items-center register-form">
                     <h2>Register</h2>
                     <div class="name-surname w-100 d-flex gap-1">
-                        <input v-model="payload.name" class="w-100" type="text" placeholder="name">
-                        <input v-model="payload.surname" class="w-100" type="text" placeholder="surname">
+                        <input v-model="payload.firstname" class="w-100" type="text" placeholder="name">
+                        <input v-model="payload.lastname" class="w-100" type="text" placeholder="surname">
                     </div>
                     <div class="d-flex flex-column gap-2 w-100">
                         <select class="w-100 py-1 gender" v-model="payload.gender">
@@ -46,13 +47,13 @@
                             <option value="female">Female</option>
                         </select>
 
-                        <input v-model="payload.email" class="w-100" type="password" placeholder="email">
-                        <input v-model="payload.user_password" class="w-100" type="text" placeholder="password" >
+                        <input v-model="payload.email" class="w-100" type="email" placeholder="email">
+                        <input v-model="payload.user_password" class="w-100" type="password" placeholder="password" >
                         <input v-model="payload.repeat_user_password" class="w-100" type="password" placeholder="repeat password">
                     </div>
                     <div class="buttons d-flex w-100 gap-1 mt-2">
                         <button class="border-0 w-50 btn-register" @click.prevent="signUp">Register
-                            <span v-if="showSpinner && spinner && showRegister" 
+                            <span v-if="showSpinner && spinner && !showSignIn && !this.$store.state.registered" 
                                 class="spinner-border spinner-border-sm" role="status" aria-hidden="true">
                             </span>
                         </button>
@@ -72,27 +73,35 @@
     </section>
 </template>
 <script>
+
 export default {
     name: 'AccountView',
     
+    components: {
+      
+    },
+
     // assume that the user has an account
     data(){
         return {
-            showSignIn: true,
             showSpinner: false,
             payload: {
-                name: '',
-                surname: '',
+                firstname: '',
+                lastname: '',
                 email: '',
                 user_password: '',
                 gender: '',
                 email: '',
                 repeat_user_password: '',
             },
+            showRegister: false
         }
     },
 
     computed: {
+        showSignIn(){ 
+            return this.$store.state.showSignIn
+        },
         spinner() {
             return this.$store.state.spinner
         },
@@ -107,10 +116,11 @@ export default {
             }
         },
         viewRegister(){
-            this.showSignIn = false;
+            this.showRegister = true;
+            this.$store.state.showSignIn = false;
         },
         viewSignIn(){
-            this.showSignIn = true;
+            this.showRegister = false;
         },
         signIn(){
             if (this.payload.email !== '' && this.payload.user_password !== ''){
@@ -119,6 +129,7 @@ export default {
                     user_password: this.payload.user_password
                 };
                 this.showSpinner = true;
+                this.$store.state.spinner = true;
                 this.$store.dispatch('login', data);
                 this.redirectToProducts();
                 return
@@ -126,7 +137,20 @@ export default {
             alert('Please enter the required data!');
         },
         signUp(){
+            // console.log(this.payload);
+            if (this.payload.user_password !== this.payload.repeat_user_password){
+                alert('Passwords do not match');
+                return;
+            }
             this.showSpinner = true;
+            let data = {
+                firstname: this.payload.firstname,
+                lastname: this.payload.lastname,
+                gender: this.payload.gender,
+                email: this.payload.email,
+                user_password: this.payload.user_password,
+            }
+            this.$store.dispatch('signUp', data);
         }
        
     },

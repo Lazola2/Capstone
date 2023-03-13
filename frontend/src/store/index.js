@@ -5,10 +5,17 @@ const URL = 'https://capstone-api-qno4.onrender.com/';
 
 export default createStore({
   state: {
+    // user related states
     loggedUser: null,
     userDetails: null,
     spinner: true,
-    loggedIn: false
+    loggedIn: false,
+    registered: false,
+    showSignIn: true,
+
+    // product related states
+    courses: null,
+
   },
   mutations: {
     setLoggedUser(state, loggedUser){
@@ -18,14 +25,16 @@ export default createStore({
       state.spinner = value
     },
     setUserDetails(state, userDetails){
-      this.userDetails = userDetails;
-    }
+      state.userDetails = userDetails;
+    },
+    setCourses(state, courses){
+      state.courses = courses;
+    },
   },
   actions: {
     async login(context, payload){
       try {
         let userData = await axios.post(`${URL}user`, payload);
-        console.log();
         if(userData){
           context.commit('setLoggedUser', userData);
           context.commit('setShowSpinner', false);
@@ -40,7 +49,32 @@ export default createStore({
         console.error(err);
       }
     },
-
+    async signUp(context, userData){
+      console.log(userData);
+      try {
+        let signUpResponse = await axios.post(`${URL}register`, userData);
+        console.log(signUpResponse);
+        if(signUpResponse){
+          this.state.showSignIn = true;
+          this.state.spinner = false;
+          this.state.registered = true
+        }
+      }
+      catch(err) {
+        console.error(err);
+      }
+    },
+    
+    // fetch courses
+    async fetchCourses(context) {
+      try{  
+        const res = await axios.get(`${URL}items`);
+        console.log(res.data.results);
+        context.commit('setCourses', res.data.results);
+      }catch(err){
+        console.error(err);
+      }
+    }
   },
   modules: {
   }

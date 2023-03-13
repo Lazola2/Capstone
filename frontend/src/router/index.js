@@ -1,4 +1,5 @@
-import { createRouter, createWebHashHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
+import store from '@/store';
 
 const routes = [
   {
@@ -23,7 +24,11 @@ const routes = [
     }
   },
   {
-    path: '/products',
+    path: '/products',/*, beforeEnter() {
+      if(!store.state.loggedUser) {
+        router.push({name: 'account'});
+      }
+   },*/
     name: 'products',
     component: function () {
       return import('../views/CoursesView.vue');
@@ -39,7 +44,7 @@ const routes = [
 ]
 
 const router = createRouter({
-  history: createWebHashHistory(),
+  history: createWebHistory(),
   routes
 })
 

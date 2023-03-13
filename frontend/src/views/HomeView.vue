@@ -1,6 +1,6 @@
 <template lang="">
     <section class="home-page">
-        <div class=" topic-links d-flex align-items-end gap-4">
+        <div class="topic-links d-flex align-items-end gap-4">
             <li class="links active">Coding</li>
             <li class="links">Trading</li>
             <li class="links">UI/UX</li>
@@ -141,15 +141,7 @@ export default {
         background: rgb(0, 0, 0);
     }
 
-    .dark-btn {
-        background: linear-gradient(rgba(14, 14, 14,.9), rgba(14, 14, 14), rgba(14, 14, 14));
-        border: none;
-        border-radius: 3px;
-        color: #fff;
-        font-size: 11px;
-        font-weight: 600;
-        box-shadow: 0 3px 5px 0 gray;
-    }
+   
 
     .btn-show-courses {
         height: 75%;
