@@ -192,7 +192,7 @@ export class Course {
     async addCourse(req, res) {
         // payload: data from the user
         let detail = req.body;
-        console.log(detail);
+        console.log('Details: ', detail);
 
         const qryStr = `INSERT INTO Courses SET ?;`;
         db.query(qryStr, [detail], (err) => {
@@ -241,9 +241,7 @@ export class Cart {
         // payload: data from the user
         let detail = req.body;
         detail.user_id = req.params.id;
-        console.log('start');
         console.log(detail);
-        console.log('end');
         const qryStr = `INSERT INTO Cart SET ?`
         db.query(qryStr, [detail], (err) => {
             if (err) {
