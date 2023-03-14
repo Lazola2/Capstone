@@ -1,0 +1,7 @@
+I managed to get the status.
+Todo: use the status on the cart
+get the message and display it
+do a loader for the add to cart
+display the items in the cart for a user
+
+do other stuff

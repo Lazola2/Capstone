@@ -34,7 +34,7 @@
                         </p>
                     </div>
                     <div class="btn-container">
-                       <button class="btnDark d-flex gap-1 px-2 mt-1">
+                       <button class="btnDark d-flex gap-1 px-2 mt-1" @click.prevent="showMore(course)">
                             VIEW
                         </button>
                     </div>
@@ -49,6 +49,7 @@
 <script>
 // import StarRating from 'vue-star-rating'
 import LoaderComponent from '@/components/Loader.vue'
+import router from '@/router';
 export default {
     name: 'CoursesPage',
     components: {
@@ -57,6 +58,13 @@ export default {
     computed: {
         courses(){
             return this.$store.state.courses;
+        }
+    },
+    methods: {
+        showMore(selectedCourse){
+            console.log(selectedCourse);
+            this.$store.state.selectedCourse = selectedCourse;
+            router.push('course')
         }
     },
     created() {

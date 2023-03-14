@@ -40,6 +40,13 @@ const routes = [
     component: function () {
       return import('../views/AdminView.vue');
     }
+  },
+  {
+    path: '/course',
+    name: 'course',
+    component: function () {
+      return import('../views/SingleCourseView.vue');
+    }
   }
 ]
 

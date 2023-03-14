@@ -1,4 +1,5 @@
 <template lang="">
+    
     <section class="home-page">
         <div class="topic-links d-flex align-items-end gap-4">
             <li class="links active">Coding</li>

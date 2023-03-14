@@ -12,10 +12,12 @@ export default createStore({
     loggedIn: false,
     registered: false,
     showSignIn: true,
+    viewRegister: false,
+    message: null,
 
     // product related states
     courses: null,
-
+    selectedCourse: null
   },
   mutations: {
     setLoggedUser(state, loggedUser){
@@ -30,6 +32,9 @@ export default createStore({
     setCourses(state, courses){
       state.courses = courses;
     },
+    setMessage(state, message){
+      state.message = message;
+    }
   },
   actions: {
     async login(context, payload){
@@ -74,7 +79,33 @@ export default createStore({
       }catch(err){
         console.error(err);
       }
+    },
+
+    addToCart(context, payload){
+      try {
+        let statusCode  = null;
+        let message = null;
+        axios.post(`${URL}user/${payload.user_id}/cart`, payload)
+        .then((data)=> {
+          statusCode = data.status
+        })
+        .then(()=>{
+            console.log('Response: ', statusCode);           
+            // context.commit('setMessage', );
+        });
+        // if (response){
+        
+        // }
+      }
+      catch(err) {
+        context.commit('setMessage', err);
+      }
+    },
+
+    getCartsForUser(context){
+
     }
+
   },
   modules: {
   }
