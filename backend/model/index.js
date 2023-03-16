@@ -158,7 +158,6 @@ export class User {
 
     toggleAdminState(req, res) {
         let data = req.body;
-        
         const qryStr = `
             UPDATE Users
             SET ?

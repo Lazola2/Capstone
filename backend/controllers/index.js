@@ -44,7 +44,7 @@ route.put('/user/:id',bodyParser.json(), (req, res)=>{
 });
 
 // toggle admin state
-route.put('/user/:id',bodyParser.json(), (req, res)=>{
+route.put('/admin/:id',bodyParser.json(), (req, res)=>{
     user.toggleAdminState(req, res);
 });
 
