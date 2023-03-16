@@ -43,6 +43,11 @@ route.put('/user/:id',bodyParser.json(), (req, res)=>{
     user.updateUser(req, res);
 });
 
+// toggle admin state
+route.put('/user/:id',bodyParser.json(), (req, res)=>{
+    user.toggleAdminState(req, res);
+});
+
 // Register a user
 route.post('/register', bodyParser.json(), (req, res)=> {
     user.createUser(req, res);
@@ -80,13 +85,12 @@ route.delete('/item/:id', (req, res)=> {
 });
 
 // cart routes==============================================
-
 // Add a new item to the cart purchase
 route.post('/user/:id/cart', bodyParser.json(), (req, res)=> {
     cart.addToCart(req, res);
 });
 
-// get all the carts for a specified user
+// get all the cart items for a specified user
 route.get('/user/:id/carts', bodyParser.json(), (req, res) => {
     cart.fetchCart(req, res);
 });

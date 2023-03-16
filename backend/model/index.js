@@ -154,8 +154,25 @@ export class User {
                 msg: "User record has been updated."
             });
         });
-
     }
+
+    toggleAdminState(req, res) {
+        let data = req.body;
+        
+        const qryStr = `
+            UPDATE Users
+            SET ?
+            WHERE user_id = ?;`
+
+        db.query(qryStr, [data, req.params.id], (err) => {
+            if (err) throw err;
+            res.status(200).json({
+                msg: "User record has been updated."
+            });
+        });
+    }
+
+    
 }
 
 // create a class for Courses
