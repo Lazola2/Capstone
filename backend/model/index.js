@@ -221,7 +221,7 @@ export class Course {
     }
 
     // update Course details
-     updateCourse(req, res) {
+    updateCourse(req, res) {
         let data = req.body;
         const qryStr = `
             UPDATE Courses
@@ -243,7 +243,7 @@ export class Course {
         WHERE course_id = ?;`
 
     db.query(qryStr, [req.params.id], (err) => {
-        if (err) throw err;
+        if (err) return err;
         res.status(200).json({
             msg: 'Course record has been removed successfully.'
         });

@@ -79,7 +79,7 @@ route.put('/item/:id', bodyParser.json(), (req, res)=> {
     course.updateCourse(req, res);
 });
 
-// Delete a product
+// Delete a course
 route.delete('/item/:id', (req, res)=> {
     course.deleteCourse(req, res);
 });
