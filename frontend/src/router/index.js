@@ -1,8 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import store from '@/store';
 
+// initializing the routes
 const routes = [
   {
+    // homepage route
     path: '/',
     name: 'home',
     component: function () {
@@ -10,6 +12,7 @@ const routes = [
     }
   },
   {
+    // account route: login and register
     path: '/account',
     name: 'account',
     component: function () {
@@ -17,6 +20,7 @@ const routes = [
     }
   },
   {
+    // about page route
     path: '/about',
     name: 'about',
     component: function () {
@@ -24,18 +28,24 @@ const routes = [
     }
   },
   {
-    path: '/products',/*, beforeEnter() {
+    path: '/products', 
+    /*beforeEnter() {
       if(!store.state.loggedUser) {
         router.push({name: 'account'});
       }
-   },*/
+    }*/
+    
     name: 'products',
     component: function () {
       return import('../views/CoursesView.vue');
     }
   },
   {
-    path: '/admin',
+    path: '/admin', beforeEnter() {
+      if(!store.state.loggedUser) {
+        router.push({name: 'account'});
+      }
+    },
     name: 'admin',
     component: function () {
       return import('../views/AdminView.vue');
@@ -46,6 +56,13 @@ const routes = [
     name: 'course',
     component: function () {
       return import('../views/SingleCourseView.vue');
+    }
+  },
+  {
+    path: '/contact',
+    name: 'contact',
+    component: function () {
+      return import('../views/ContactPageView.vue');
     }
   }
 ]

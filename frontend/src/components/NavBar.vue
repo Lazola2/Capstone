@@ -13,11 +13,11 @@
                 <li v-if="loggedUser"><router-link to="/products">Products</router-link></li>
                 <li><router-link to="/account">Account</router-link></li>
                 <li><router-link to="/about">About</router-link></li>
-                <li>Contact</li>
+                <li><router-link to="/contact">Contact</router-link></li>
                 <li v-if="loggedUser?.data.result.user_role === 'admin'">
                     <router-link to="/admin">Admin</router-link>
                 </li>
-                <li v-if="loggedUser">Cart(0)</li>
+                <li v-if="loggedUser">Cart({{ this.cartItems || this.cartItems.length === 0 ? this.cartItems.length : 0 }})</li>
                 <li v-if="loggedUser">
                     {{ 
                         `${loggedUser.data.result.firstname} ${loggedUser.data.result.lastname}`
@@ -34,14 +34,14 @@ export default {
     name: 'NavBar',
     computed: {
         loggedUser(){
-            return this.$store.state.loggedUser
+            return this.$store.state.loggedUser;
+        },
+        cartItems(){
+            return this.$store.state.userCart;
         }
     },
-    data(){
-        return {
-            cartItems: 0
-        }
-    },
+   
+
 }
 </script>
 <style scoped>

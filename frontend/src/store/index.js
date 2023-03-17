@@ -5,6 +5,9 @@ const URL = 'https://capstone-api-qno4.onrender.com/';
 
 export default createStore({
   state: {
+    // fetch all users
+    users: null,
+
     // user related states
     loggedUser: null,
     userDetails: null,
@@ -17,11 +20,17 @@ export default createStore({
 
     // product related states
     courses: null,
-    selectedCourse: null
+    selectedCourse: null,
+
+    // user's cart
+    userCart: null
   },
   mutations: {
     setLoggedUser(state, loggedUser){
       state.loggedUser = loggedUser;
+    },
+    setUsers(state, users){
+      state.users = users;
     },
     setShowSpinner(state, value) {
       state.spinner = value
@@ -34,6 +43,9 @@ export default createStore({
     },
     setMessage(state, message){
       state.message = message;
+    },
+    setUserCart(state, cart){
+      state.userCart = cart
     }
   },
   actions: {
@@ -70,11 +82,21 @@ export default createStore({
       }
     },
     
+    async fetchUsers(context){
+      try{  
+        const res = await axios.get(`${URL}users`);
+        console.log('Users: ', res.data.results);
+        context.commit('setUsers', res.data.results);
+      }catch(err){
+        console.error(err);
+      }
+    },
+    
     // fetch courses
     async fetchCourses(context) {
       try{  
         const res = await axios.get(`${URL}items`);
-        console.log(res.data.results);
+        // console.log(res.data.results);
         context.commit('setCourses', res.data.results);
       }catch(err){
         console.error(err);
@@ -102,9 +124,83 @@ export default createStore({
       }
     },
 
-    getCartsForUser(context){
+    getCartsForUser(context, payload){
+      // /user/:id/carts
+      try {
+        let cart = null;
+        axios.get(`${URL}user/${payload}/carts`)
+        .then((res)=> {
+          cart = res.data
+        })
+        .then(()=>{
+            console.log('Data: ', cart);           
+            // context.commit('setMessage', );
+            context.commit('setUserCart', cart);
+        });
 
-    }
+      }
+      catch(err){
+        console.error(err);
+      }
+    },
+
+    async deleteUser(context, user_id){
+      console.log('Statement 1 reached');
+      const res = await axios.delete(`${URL}user/${user_id}`);
+      console.log('Statement 2 reached');
+      const {msg} = res;
+      if (res) {
+        console.log(msg);
+        context.commit('setMessage', msg);
+      }
+    },
+
+    async toggleAdminState(context, payload){
+      let user_id = payload.user_id;
+      const res = await axios.put(`${URL}admin/${user_id}`,payload);
+      const {msg} = res.data;
+      if (res) {
+        console.log(msg);
+        context.commit('setMessage', msg);
+      }
+      
+    },
+
+    // delete course: not working
+    async deleteCourse(context, course_id){
+      console.log(course_id);
+      const res = await axios.delete(`${URL}item/${course_id}`);
+      if (res) {
+        const {msg} = res.data
+        console.log('feedback: ', msg);
+        context.commit('setMessage', msg);
+      }
+    },
+
+    // update course details
+    async updateCourse(context, payload){
+      let course_id = payload.course_id;
+      payload = {
+          title: payload.title,
+          category: payload.category,
+          description: payload.course_description,
+          price: payload.price,
+          image_link: payload.image_link,
+          rating: payload.rating,
+      }
+      console.log(course_id);
+      console.log(payload);
+      const res = await axios.put(`${URL}item/${course_id}`, payload);
+      const {msg} = res.data;
+      if (res) {
+        console.log(msg);
+        context.commit('setMessage', msg);
+      }
+    },
+
+    
+
+
 
   },
   modules: {

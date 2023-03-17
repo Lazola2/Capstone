@@ -18,10 +18,12 @@
     <div class="right-side dark text-white d-flex align-items-center justify-content-center flex-column gap-3">
         <p class="logo">Course it</p>
         <p class="text-center">Enjoy our limitless range of affordable courses!</p>
-        <button class="btn-about-us">About Us</button>
+        <button class="btn-about-us" @click.prevent="redirectToAbout">About Us</button>
     </div>
 </template>
 <script>
+import router from '@/router';
+
 export default {
     name: 'LoginForm',
  
@@ -46,12 +48,22 @@ export default {
         showSignIn(){ 
             return this.$store.state.showSignIn
         },
+        userDetails(){
+            return this.$store.state.userDetails
+        },
         spinner() {
             return this.$store.state.spinner
         },
     },
     methods:{
+        // method to sign in
         signIn(){
+            // validate if the inputs have valid data
+            if (!this.validateSignInPayload({
+                email: this.payload.email,
+                user_password: this.payload.user_password
+            })) return 
+
             if (this.payload.email !== '' && this.payload.user_password !== ''){
                 let data = {
                     email: this.payload.email,
@@ -60,6 +72,7 @@ export default {
                 this.showSpinner = true;
                 this.$store.state.spinner = true;
                 this.$store.dispatch('login', data);
+                
                 this.redirectToProducts();
                 return
             }
@@ -71,9 +84,22 @@ export default {
         },
         redirectToProducts(){
             if (this.$store.state.loggedUser){
-                alert('redirecting...');
+                router.push('products');
             }
         },
+        redirectToAbout(){
+            router.push('about');
+        },
+
+        validateSignInPayload(payload){
+            for (let property in payload){
+                if ( payload[property] === '' || payload[property] === undefined){
+                    alert(`Please enter value in the edits.`);
+                    return false
+                }
+            }
+            return true
+        }
     }
 }
 </script>
