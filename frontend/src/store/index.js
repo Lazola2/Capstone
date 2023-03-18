@@ -124,25 +124,16 @@ export default createStore({
       }
     },
 
-    getCartsForUser(context, payload){
+    async getCartsForUser(context, payload){
       // /user/:id/carts
-      try {
-        let cart = null;
-        axios.get(`${URL}user/${payload}/carts`)
-        .then((res)=> {
-          cart = res.data
-        })
-        .then(()=>{
-            console.log('Data: ', cart);           
-            // context.commit('setMessage', );
-            context.commit('setUserCart', cart);
-        });
-
-      }
-      catch(err){
-        console.error(err);
-      }
+        try{  
+          const res = await axios.get(`${URL}user/${payload.user_id}/carts`);
+          context.commit('setUserCart', res.data.results);
+        }catch(err){
+          console.error(err);
+        }
     },
+    
 
     async deleteUser(context, user_id){
       console.log('Statement 1 reached');
@@ -197,11 +188,6 @@ export default createStore({
         context.commit('setMessage', msg);
       }
     },
-
-    
-
-
-
   },
   modules: {
   }

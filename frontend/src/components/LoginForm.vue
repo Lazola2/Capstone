@@ -74,6 +74,7 @@ export default {
                 this.$store.dispatch('login', data);
                 
                 this.redirectToProducts();
+                
                 return
             }
             alert('Please enter the required data!');

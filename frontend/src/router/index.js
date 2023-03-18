@@ -28,16 +28,27 @@ const routes = [
     }
   },
   {
-    path: '/products', 
-    /*beforeEnter() {
+    path: '/products', beforeEnter() {
       if(!store.state.loggedUser) {
         router.push({name: 'account'});
       }
-    }*/
+    },
     
     name: 'products',
     component: function () {
       return import('../views/CoursesView.vue');
+    }
+  },
+  {
+    path: '/cart', beforeEnter() {
+      if(!store.state.loggedUser) {
+        router.push({name: 'account'});
+      }
+    },
+    
+    name: 'cart',
+    component: function () {
+      return import('../views/CartView.vue');
     }
   },
   {

@@ -99,8 +99,8 @@
                     </div> 
                 </div>
             </div>
-            <div v-else>
-                <h1>Nothing to display</h1>
+            <div v-else class="w-100 d-flex align-items-center justify-content-center">
+                <h1>Sorry, nothing to display.</h1>
             </div>
         </div>
         <div v-else-if="sorted" class="courses-wrapper flex-wrap gap-4 my-4 mx-5">
@@ -191,7 +191,7 @@ export default {
 
         // showMore
         showMore(selectedCourse){
-            console.log(selectedCourse);
+            // console.log(selectedCourse);
             this.$store.state.selectedCourse = selectedCourse;
             router.push('course')
         },
@@ -270,7 +270,11 @@ export default {
     },
     created() {
         this.$store.dispatch('fetchCourses');
-        this.$store.dispatch('getCartsForUser', this.loggedUser?.data.result.user_id);
+        // alert('User id: ', this.$store.dispatch('getCartsForUser'));
+
+        this.$store.dispatch('getCartsForUser',{
+            user_id: this.$store.state.loggedUser?.data.result.user_id
+        });
     }
 }
 </script>

@@ -17,7 +17,11 @@
                 <li v-if="loggedUser?.data.result.user_role === 'admin'">
                     <router-link to="/admin">Admin</router-link>
                 </li>
-                <li v-if="loggedUser">Cart({{ this.cartItems || this.cartItems.length === 0 ? this.cartItems.length : 0 }})</li>
+                <li v-if="loggedUser">
+                    <router-link to="/cart">
+                        Cart({{ cartItems?.length ?  cartItems?.length: 0 }})
+                    </router-link>
+                </li>
                 <li v-if="loggedUser">
                     {{ 
                         `${loggedUser.data.result.firstname} ${loggedUser.data.result.lastname}`
@@ -40,8 +44,6 @@ export default {
             return this.$store.state.userCart;
         }
     },
-   
-
 }
 </script>
 <style scoped>
