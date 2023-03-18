@@ -249,6 +249,19 @@ export class Course {
         });
     });  
     }
+
+    // count the available courses by category
+    countCoursesByCategory(req, res){
+        const qryStr = `
+            SELECT DISTINCT count(course_id) from Courses
+            WHERE category = ? ;`
+        db.query(qryStr, [req.params.category], (err, data ) => {
+            if (err) throw err;
+            res.status(200).json({
+                results: data
+            });
+        });
+    }
 }
 
 export class Cart {

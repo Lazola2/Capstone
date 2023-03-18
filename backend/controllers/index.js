@@ -84,6 +84,10 @@ route.delete('/item/:id', (req, res)=> {
     course.deleteCourse(req, res);
 });
 
+route.get('/categories', (req, res) => {
+    course.countCoursesByCategory(req, res);
+});
+
 // cart routes==============================================
 // Add a new item to the cart purchase
 route.post('/user/:id/cart', bodyParser.json(), (req, res)=> {
