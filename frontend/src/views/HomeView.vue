@@ -1,31 +1,36 @@
 <template lang="">
     
     <section class="home-page">
-        <div class="topic-links d-flex align-items-end gap-4">
-            <li class="links active">Coding</li>
-            <li class="links">Trading</li>
-            <li class="links">UI/UX</li>
-            <li class="links">Marketing</li>
+        <div class="topic-links d-flex align-items-end gap-4"> 
+            <li :class="activeLink === 1 ? 'active' : ''" @click.prevent="clickHeading('coding')">Coding</li>
+            <li :class="activeLink === 2 ? 'active' : ''" @click.prevent="clickHeading('trading')">Trading</li>
+            <li :class="activeLink === 3 ? 'active' : ''" @click.prevent="clickHeading('ui/ux')">UI/UX</li>
+            <li :class="activeLink === 4 ? 'active' : ''" @click.prevent="clickHeading('marketing')">Marketing</li>
+
         </div>
         
-        <div class="slide-show">
-            <h1 class="text-white title">{{this.selectedCourse}}</h1>
-            <div class="buttons w-100 d-flex justify-content-between px-2">  
-                <i class="bi bi-chevron-left text-white"></i>
-                <i class="bi bi-chevron-right text-white"></i>
+        <div class="slide-show"
+        :style="{backgroundImage: `
+            linear-gradient(rgba(0,0,0,.6), rgba(0,0,0)),
+            url(${this.selectedCourse.background})`}">
+            <h1 class="text-white title">{{this.selectedCourse.title}}</h1>
+            <p class="description">{{this.selectedCourse.description}} </p>
+            <div class="buttons w-100 d-flex justify-content-end px-2">  
+                <!-- <i class="bi bi-chevron-left text-white" @click.prevent="previousSlide"></i> -->
+                <i class="bi bi-chevron-right text-white" @click.prevent="nextSlide"></i>
             </div>
         </div>
         <div class="content d-flex pt-4 px-4 flex-column">
-            <h2 class="mb-5">50 {{selectedCourse.toUpperCase()}} Courses<br>Beginner to Advanced</h2>
+ 
+            <h2 class="mb-5">{{selectedCourse.title}} Courses<br>Beginner to Advanced</h2>
             <div class="buttons d-flex gap-2">
                 <button @click.prevent="sendToLogin" class="dark-btn btn-sign-in px-4 d-flex align-items-center justify-content-center gap-2">
                     Sign in<i class="bi bi-box-arrow-in-right"></i>
                 </button>
-                <button class="dark-btn btn-sign-up px-4">Sign up</button>
             </div>
         </div>
         <div class="button-holder d-flex pt-3">
-            <button class="btn-show-courses dark-btn">SHOW COURSES</button>
+            <button class="btn-show-courses dark-btn" @click.prevent="redirectToProducts">SHOW COURSES</button>
         </div>
     </section>
 </template>
@@ -35,14 +40,43 @@ export default {
     name: 'HomeView',
     data(){
         return {
-            courses: ['Coding', 'Trading', 'UI/UX', 'Marketing'],
+            // course to display on the slide show
+            courses: [
+                {
+                    id: 1,
+                    title: 'Coding',
+                    description: 'We have an array of Coding courses available at your disposal.',
+                    background: 'https://i.postimg.cc/MKtgcVr7/what-is-a-programming-language.jpg'
+                },
+                {
+                    id: 2,
+                    title: 'Trading',
+                    description: 'We have an array of Trading courses available at your disposal.',
+                    background: 'https://i.postimg.cc/y8kpk5RK/trading.jpg'
+                },
+                {
+                    id: 3,
+                    title: 'UI/UX',
+                    description: 'We have an array of UI/UX courses available at your disposal.',
+                    background: 'https://i.postimg.cc/8cLJKTxG/uiux.png'
+                },
+                {
+                    id: 4,
+                    description: 'We have an array of Marketing courses available at your disposal.',
+                    title: 'Marketing',
+                    background: 'https://i.postimg.cc/HsWQLyM1/marketing.png'
+                }
+            ],
             counter: 0,
             selectedCourse: '',
+            activeLink: 1
         }
     },
     methods: {
+        // change the value of the selected course 
         changeCourse(){
             this.selectedCourse = this.courses[this.counter] 
+            this.activeLink = this.counter + 1
             if (this.counter < 3) {
                 this.counter++
             }
@@ -50,18 +84,31 @@ export default {
                 this.counter = 0
             }   
         },
+
+        // send the user to the login page
         sendToLogin(){
             if (this.$store.state.loggedUser){
-                alert('logged in');
+                router.push({name: 'products'});
             }
             else {
                 router.push({name: 'account'});           
             }
-        }
+        },
+
+        // redirect the user to the products page
+        redirectToProducts(){
+            // if the user is not logged in, they will be sent to the login else products
+            this.sendToLogin();
+        },
+
+        // change to the next slide
+        nextSlide(){
+            this.changeCourse();
+        },
     },
     created(){
         this.changeCourse()
-        setInterval(this.changeCourse, 5000);
+        setInterval(this.changeCourse, 3000);
     },
     
 }
@@ -74,7 +121,7 @@ export default {
         grid-template-rows: .8fr  .7fr .5fr 4fr repeat(2, 1fr);
     }
 
-    .topic-links > .links {
+    .topic-links > li {
         font-size: 14px;
         list-style: none;
         position: relative;
@@ -85,9 +132,15 @@ export default {
     }
 
     .title {
-        margin-left: 5rem;
+        margin-left: 4rem;
         font-size: 60px;
         margin-top: 5rem;
+    }
+
+   .description {
+        margin-left: 4.5rem;
+        font-size: 15px;
+        color: #fff;
     }
 
     .slide-show {

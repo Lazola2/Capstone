@@ -71,31 +71,36 @@
             </div>
         </div>
         <div v-else-if="courses && filteredCourses && !sorted" class="courses-wrapper flex-wrap gap-4 my-4 mx-5">
-            <div class="course"  v-for="course in filteredCourses" :key="course.course_id">
-                <div class="picture" :style="{backgroundImage: `
-                    linear-gradient(rgba(0,0,0,.2),rgba(0,0,0,.2)), 
-                    url(${course.image_link})`}"
-                ></div>
-                <div class="content d-flex flex-column">
-                    <span class="name-price d-flex justify-content-between px-2 pt-1">
-                        <p class="course-name text-white">
-                            {{course.title}}
-                        </p>
-                        <p class="course-price text-white">
-                            {{`R${course.price}`}}
-                        </p>
-                    </span>
-                    <div class="description">
-                        <p class="description-paragraph text-white px-2">
-                            {{course.course_description}}
-                        </p>
-                    </div>
-                    <div class="btn-container">
-                       <button class="btnDark d-flex gap-1 px-2 mt-1" @click.prevent="showMore(course)">
-                            VIEW
-                        </button>
-                    </div>
-                </div> 
+            <div v-if="filteredCourses?.length !== 0" class="container-filtered w-100 h-100  d-flex flex-wrap flex-wrap gap-4">
+                <div class="course" v-for="course in filteredCourses" :key="course.course_id">
+                    <div class="picture" :style="{backgroundImage: `
+                        linear-gradient(rgba(0,0,0,.2),rgba(0,0,0,.2)), 
+                        url(${course.image_link})`}"
+                    ></div>
+                    <div class="content d-flex flex-column">
+                        <span class="name-price d-flex justify-content-between px-2 pt-1">
+                            <p class="course-name text-white">
+                                {{course.title}}
+                            </p>
+                            <p class="course-price text-white">
+                                {{`R${course.price}`}}
+                            </p>
+                        </span>
+                        <div class="description">
+                            <p class="description-paragraph text-white px-2">
+                                {{course.course_description}}
+                            </p>
+                        </div>
+                        <div class="btn-container">
+                           <button class="btnDark d-flex gap-1 px-2 mt-1" @click.prevent="showMore(course)">
+                                VIEW
+                            </button>
+                        </div>
+                    </div> 
+                </div>
+            </div>
+            <div v-else>
+                <h1>Nothing to display</h1>
             </div>
         </div>
         <div v-else-if="sorted" class="courses-wrapper flex-wrap gap-4 my-4 mx-5">
@@ -234,10 +239,10 @@ export default {
                     this.setSelectedLink(2);
                     break;
                 case 'trading' :
-                    this.setSelectedLink(4);
+                    this.setSelectedLink(3);
                     break;
                 case 'ui/ux':
-                    this.setSelectedLink(3);
+                    this.setSelectedLink(4);
                     break;
                 case 'marketing' :
                     this.setSelectedLink(5);
