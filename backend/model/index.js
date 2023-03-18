@@ -250,18 +250,7 @@ export class Course {
     });  
     }
 
-    // count the available courses by category
-    countCoursesByCategory(req, res){
-        const qryStr = `
-            SELECT DISTINCT count(course_id) from Courses
-            WHERE category = ? ;`
-        db.query(qryStr, [req.params.category], (err, data ) => {
-            if (err) throw err;
-            res.status(200).json({
-                results: data
-            });
-        });
-    }
+   
 }
 
 export class Cart {
@@ -300,7 +289,7 @@ export class Cart {
     // fetch all items in the cart for a specific user
     fetchCart(req,res) {
         const qryStr = `
-            SELECT cr.user_id, cr.cart_id, cr.status, cr.date, c.price, c.title, c.category, c.course_description, c.rating, c.image_link
+            SELECT cr.user_id, cr.cart_id, cr.status, cr.date, c.course_id, c.price, c.title, c.category, c.course_description, c.rating, c.image_link
             FROM Cart cr 
             INNER JOIN Courses c
             USING (course_id)
