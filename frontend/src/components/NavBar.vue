@@ -41,9 +41,20 @@ export default {
             return this.$store.state.loggedUser;
         },
         cartItems(){
+            this.getCartItems();
             return this.$store.state.userCart;
-        }
+        },
+        
     },
+    methods: {
+        getCartItems(){
+            if (this.loggedUser) {
+                this.$store.dispatch('getCartsForUser',{
+                    user_id: this.$store.state.loggedUser?.data.result.user_id
+                });
+            }
+        }
+    }
 }
 </script>
 <style scoped>

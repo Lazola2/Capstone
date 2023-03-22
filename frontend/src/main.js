@@ -28,3 +28,4 @@ library.add(faUserSecret);
 createApp(App).
 component('font-awesome-icon', FontAwesomeIcon).
 use(store).use(router).use(bootstrap).mount('#app');
+

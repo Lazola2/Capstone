@@ -1,4 +1,5 @@
 <template>
+    <SweetAlert :message="message" :showAlert="showAlert"/>
     <section class="single-course-section d-flex align-items-center justify-content-center">
         <div class="wrapper ps-5 bg-white"> 
             <img :src="this.selectedCourse?.image_link" alt="A picture of the selected course" class="img">
@@ -25,12 +26,22 @@
 </template>
 <script>
 import router from '@/router'
+import SweetAlert from '@/components/SweetAlert.vue'
+
 export default {
+    components: {
+        SweetAlert
+    },
     data(){
         return {
             // check if an item is already in the cart
             alreadyInCart: false,
-            showSpinner: false
+            showSpinner: false,
+            showAlert: false,
+            message: {
+                text: '',
+                type: ''
+            }
         }
     },
 
@@ -41,48 +52,72 @@ export default {
         cartItems(){
             return this.$store.state.userCart
         },
-    },
-
-    methods: {
         getUser(){
             let user = this.$store.state.loggedUser;
             console.log(user);
             return  user
-        },
+        }
+    },
+
+    methods: {
         cancelOperation(){
             this.redirectToProductsPage();
             this.resetSelectedCourse();
         },
 
         // add an item to the cart
-        addToCart(){
+        async addToCart(){
             let payload = {
                 course_id: this.selectedCourse.course_id,
-                user_id: this.getUser()?.data.result.user_id
+                user_id: this.getUser?.data.result.user_id
             }
         
             // check if the item already exists
             for (let i = 0; i < this.cartItems.length; i++){
                 if (this.cartItems[i].course_id === payload.course_id){
-                    alert('Item already in cart');
+                    this.message.text = 'Item is already in cart';
+                    this.message.type = 'warning'
+                    this.showAlert = true
+                    setTimeout( () => {
+                        this.showAlert = false;
+                        this.redirectToProductsPage();
+                    }, 3000);
                     this.alreadyInCart = true;
                     break;
                 }
             }
    
             // executed if the item is not in the cart
-            if (this.alreadyInCart === false ){
-                console.log('Statement reached!');
+            if (this.alreadyInCart === false){
+                // run the spinner
                 this.showSpinner = true;
-                this.$store.dispatch('addToCart', payload);
+
+                await this.$store.dispatch('addToCart', payload);
+                await this.$store.dispatch('getCartsForUser', payload);
+                
+                // disable the spinner after adding to cart
                 this.showSpinner = false;
+                
+                // set the message
+                this.message.text = this.$store.state.message
+                this.message.type = 'success'
+
+                // show the alert
+                this.showAlert = true
+
+                // disable the alert after 3 seconds and redirect to products page,
+                setTimeout( () => {
+                    this.showAlert = false;
+                    this.redirectToProductsPage();
+                }, 3000);
             }
+
         },
         resetSelectedCourse(){
-            this.$store.state.selectedCourse = null
+            this.$store.state.selectedCourse = null;
         },
         redirectToProductsPage(){
-            router.push('products')
+            router.push('products');
         }
     },
 }

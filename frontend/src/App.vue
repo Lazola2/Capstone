@@ -15,6 +15,16 @@
         loggedIn: false
       }
     },
+    created(){
+        /** If the user data is not available on the store, check if the session storage has data and 
+         * retrieve it
+        */
+        if (!this.$store.state.loggedUser){
+            if (JSON.parse(sessionStorage.getItem('loggedUser'))){
+                this.$store.state.loggedUser = JSON.parse(sessionStorage.getItem('loggedUser'));
+            }
+       }
+    }
   }
 </script>
 <style>

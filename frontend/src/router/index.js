@@ -75,7 +75,18 @@ const routes = [
     component: function () {
       return import('../views/ContactPageView.vue');
     }
+  },
+  {
+    path: '/:patchMatch(.*)*',
+    name: 'login',
+    meta: {
+      title: 'Login'
+    },
+    component: function () {
+      return import('../views/HomeView.vue');
+    }
   }
+
 ]
 
 const router = createRouter({

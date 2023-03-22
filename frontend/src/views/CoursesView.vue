@@ -275,6 +275,8 @@ export default {
         this.$store.dispatch('getCartsForUser',{
             user_id: this.$store.state.loggedUser?.data.result.user_id
         });
+
+        console.log('User Data from SStorage: ', JSON.parse(sessionStorage.getItem('loggedUser')));
     }
 }
 </script>

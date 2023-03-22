@@ -17,6 +17,7 @@ export default createStore({
     showSignIn: true,
     viewRegister: false,
     message: null,
+    status: null,
 
     // product related states
     courses: null,
@@ -46,6 +47,9 @@ export default createStore({
     },
     setUserCart(state, cart){
       state.userCart = cart
+    },
+    setStatus(state, status){
+      state.status = status
     }
   },
   actions: {
@@ -53,6 +57,7 @@ export default createStore({
       try {
         let userData = await axios.post(`${URL}user`, payload);
         if(userData){
+          sessionStorage.setItem('loggedUser', JSON.stringify(userData));
           context.commit('setLoggedUser', userData);
           context.commit('setShowSpinner', false);
           setTimeout(()=>{
@@ -63,7 +68,9 @@ export default createStore({
         }
       }
       catch(err) {
-        console.error(err);
+        context.commit('setMessage', err.response?.data.err);
+        context.commit('setStatus', err.response?.status);
+        
       }
     },
     async signUp(context, userData){
@@ -103,21 +110,21 @@ export default createStore({
       }
     },
 
-    addToCart(context, payload){
+    // add items to the cart
+    async addToCart(context, payload){
       try {
         let statusCode  = null;
         let message = null;
-        axios.post(`${URL}user/${payload.user_id}/cart`, payload)
+
+        await axios.post(`${URL}user/${payload.user_id}/cart`, payload)
         .then((data)=> {
           statusCode = data.status
+          message = data
         })
         .then(()=>{
             console.log('Response: ', statusCode);           
-            // context.commit('setMessage', );
+            context.commit('setMessage', message.data.msg);
         });
-        // if (response){
-        
-        // }
       }
       catch(err) {
         context.commit('setMessage', err);

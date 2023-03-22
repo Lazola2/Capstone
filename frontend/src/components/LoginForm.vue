@@ -1,9 +1,17 @@
 <template >
     <div class="left-side px-4 pt-4">
+        <div class="w-100 alert-container" v-if="message && showAlert">
+            <SweetAlert :message="message" @show-alert="showAlert" :showAlert="showAlert"/>
+        </div>
+
         <form class="h-100 w-100 d-flex flex-column align-items-center">
             <i class="bi bi-basket2-fill icon"></i>
             <div class="email-password w-100 d-flex flex-column gap-2 mb-3">
-                <input v-model="payload.email" class="w-100" type="email" placeholder="email">
+                <input v-model="payload.email" 
+                    class="w-100" type="email" placeholder="email"
+                    title="Please enter a valid email"
+                    required pattern="[a-z0-9._-]+@[a-z]+\.[a-z]{2,}"
+                >
                 <input v-model="payload.user_password" class="w-100" type="password" placeholder="password">
             </div>
             <p class="forgot-password">Forgot password?</p>
@@ -23,13 +31,20 @@
 </template>
 <script>
 import router from '@/router';
-
+import SweetAlert from './SweetAlert.vue';
 export default {
     name: 'LoginForm',
- 
+    components: {
+        SweetAlert
+    },
     data(){
         return {
+            message: {
+                text: '',
+                type: ''
+            },
             showSpinner: false,
+            showAlert: false,
             payload(){
                 let payload = {
                     email: '',
@@ -59,7 +74,8 @@ export default {
         // method to sign in
         signIn(){
             // validate if the inputs have valid data
-            if (!this.validateSignInPayload({
+            // alert(this.showAlert);
+            if (!this.validatePayload({
                 email: this.payload.email,
                 user_password: this.payload.user_password
             })) return 
@@ -74,7 +90,6 @@ export default {
                 this.$store.dispatch('login', data);
                 
                 this.redirectToProducts();
-                
                 return
             }
             alert('Please enter the required data!');
@@ -92,10 +107,12 @@ export default {
             router.push('about');
         },
 
-        validateSignInPayload(payload){
+        validatePayload(payload){
             for (let property in payload){
                 if ( payload[property] === '' || payload[property] === undefined){
-                    alert(`Please enter value in the edits.`);
+                    this.message.text = 'Please enter value in the edits.'
+                    this.message.type = 'error'
+                    this.showAlert = true;
                     return false
                 }
             }

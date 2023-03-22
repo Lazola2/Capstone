@@ -1,11 +1,8 @@
 <template>
     <section class="account">
-        <div class="alert alert-dark alert-dismissible fade show position-fixed w-100" role="alert" v-if="this.loggedIn">
-            User successfully logged in.
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <div class="w-100 alert-container position-absolute" v-if="loggedUser">
+            <SweetAlert :message="message" @show-alert="showAlert" :showAlert="showAlert"/>
         </div>
-        <!-- end spinner modal -->
-
         <!-- sign in form -->
         <div class="sign-in d-flex" v-if="this.showSignIn">
             <LoginForm/>
@@ -20,12 +17,23 @@
 <script>
 import LoginForm from '@/components/LoginForm.vue'
 import RegisterForm from '@/components/RegisterForm.vue'
+import SweetAlert from '@/components/SweetAlert.vue'
 
 export default {
     name: 'AccountView',
     components: {
-      LoginForm,
-      RegisterForm
+        SweetAlert,
+        LoginForm,
+        RegisterForm
+    },
+    data(){
+        return {
+            message: {
+                text: '',
+                type: ''
+            },
+            showAlert: false
+        }
     },
 
     computed: {
@@ -33,18 +41,29 @@ export default {
             return this.$store.state.showSignIn
         },
        
-        loggedIn(){
+        loggedUser(){
+            // let user = this.$store.state.loggedUser
+            if (this.$store.state.loggedUser !== null) {
+                this.message.text = this.$store.state.loggedUser?.data.msg;
+                this.message.type = this.$store.state.loggedUser?.data.msg === 'Logged in' ?
+                 'success' : 'error' 
+                console.log(this.$store.state.loggedUser?.data);
+                this.showAlert = true
+            }
+            else {
+                
+                this.message.type = this.$store.state.status === 401 ?
+                'error' : 'success'
+                this.message.text = this.$store.state.message
+                this.showAlert = true
+            }
             return this.$store.state.loggedUser
         },
         showRegister(){
             return this.$store.state.showRegister
-        }
+        },
     },
     methods: {
-    
-       
-     
-       
     },
  
 }
@@ -67,8 +86,6 @@ export default {
         top: -10px;
     }
 
-   
-
     .account {
         height: 91vh;
         display: grid;
@@ -82,6 +99,11 @@ export default {
         overflow: hidden;
         box-shadow: 0 2px 5px 0 gray;
         box-sizing: border-box;
+    }
+
+    .alert-container {
+        top: 9vh;
+        left: 0;
     }
 
     

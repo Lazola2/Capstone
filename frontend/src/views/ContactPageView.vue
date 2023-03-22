@@ -5,10 +5,19 @@
                 <form class="h-100 w-100 d-flex flex-column align-items-center" method="POST" action="https://formspree.io/f/xgebzjde">
                     <i class="bi bi-basket2-fill icon"></i>
                     <div class="email-password w-100 d-flex flex-column gap-2 mb-3">
-                        <input  v-model="payload.name" class="w-100" type="name" placeholder="enter name">
-                        <input  v-model="payload.surname" class="w-100" type="surname" placeholder="enter surname">
-                        <input  v-model="payload.email" class="w-100" type="email" placeholder="enter email">
-                        <textarea v-model="payload.message" name="message" id="message" placeholder="message" ></textarea>
+                        <input  v-model="payload.name"
+                            title="Uppercase and lowercase characters required and length must be greater than 3."
+                            pattern="[A-Z]+[a-zA-Z]+[a-z]" 
+                            class="w-100" type="text" name="name" placeholder="enter name" required>
+                        <input  v-model="payload.surname" 
+                            title="Name must start with upper case and length must be greater than 3."
+                            pattern="[A-Z]+[a-zA-Z]+[a-z]" 
+                            class="w-100" type="text" name="surname" placeholder="enter surname">
+                        <input  v-model="payload.email" 
+                            title="Please enter a valid email address (must include: a number)"
+                            pattern="[a-z]+[0-9]+@[a-z]+\.[a-z]{2,}"
+                            class="w-100" type="email" name="email" placeholder="enter email" required>
+                        <textarea v-model="payload.message" name="message" id="message" placeholder="message" required></textarea>
                         <button class="border-0 w-100 btn-send">Send</button>
                     </div>
                 </form>
