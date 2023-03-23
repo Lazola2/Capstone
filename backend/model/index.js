@@ -266,7 +266,7 @@ export class Cart {
                 res.status(401).json({err});
                 return;
             }
-            res.status(200).json({msg: 'Cart record has been saved.'});
+            res.status(200).json({msg: 'Item has been successfully added to cart.'});
         });
     }
     
@@ -289,11 +289,11 @@ export class Cart {
     // fetch all items in the cart for a specific user
     fetchCart(req,res) {
         const qryStr = `
-            SELECT cr.user_id, cr.cart_id, cr.status, cr.date, c.course_id, c.price, c.title, c.category, c.course_description, c.rating, c.image_link
-            FROM Cart cr 
-            INNER JOIN Courses c
-            USING (course_id)
-            WHERE user_id = ?;`;
+        SELECT cr.user_id, cr.cart_id, cr.status, cr.date, c.course_id, c.price, c.title, c.category, c.course_description, c.rating, c.image_link
+        FROM Cart cr 
+        INNER JOIN Courses c
+        USING (course_id)
+        WHERE user_id = ? AND status = 'in cart';`
 
         db.query(qryStr, [req.params.id], (err, data) => {
             if (err) throw err;
