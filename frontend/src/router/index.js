@@ -52,6 +52,18 @@ const routes = [
     }
   },
   {
+    path: '/checkout', beforeEnter() {
+      if(!store.state.loggedUser) {
+        router.push({name: 'account'});
+      }
+    },
+    
+    name: 'checkout',
+    component: function () {
+      return import('../views/CheckoutPage.vue');
+    }
+  },
+  {
     path: '/admin', beforeEnter() {
       if(!store.state.loggedUser) {
         router.push({name: 'account'});
@@ -85,7 +97,20 @@ const routes = [
     component: function () {
       return import('../views/HomeView.vue');
     }
-  }
+  },
+  // route for the user's profile
+  {
+    path: '/profile', beforeEnter() {
+      if(!store.state.loggedUser) {
+        router.push({name: 'account'});
+      }
+    },
+    
+    name: 'profile',
+    component: function () {
+      return import('../views/UserProfileView.vue');
+    }
+  },
 
 ]
 

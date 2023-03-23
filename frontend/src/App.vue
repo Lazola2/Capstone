@@ -1,14 +1,16 @@
 <template>
   <NavBar/>
   <router-view/>
+  <Footer/>
 </template>
 
 <script>
   import NavBar from '@/components/NavBar.vue';
-  import { mapGetters } from 'vuex';
+  import Footer from './components/Footer.vue';
   export default {
     components: {
-      NavBar
+      NavBar,
+      Footer
     },
     data(){
       return {
@@ -23,11 +25,13 @@
             if (JSON.parse(sessionStorage.getItem('loggedUser'))){
                 this.$store.state.loggedUser = JSON.parse(sessionStorage.getItem('loggedUser'));
             }
-       }
+        }
+        
     }
   }
 </script>
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
   nav {
     padding: 30px;
   }

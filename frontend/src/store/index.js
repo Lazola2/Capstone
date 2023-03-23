@@ -24,7 +24,8 @@ export default createStore({
     selectedCourse: null,
 
     // user's cart
-    userCart: null
+    userCart: null,
+    itemsToPurchase: []
   },
   mutations: {
     setLoggedUser(state, loggedUser){
@@ -88,7 +89,32 @@ export default createStore({
         console.error(err);
       }
     },
-    
+
+    // delete a user
+    async deleteUser(context, user_id){
+      const res = await axios.delete(`${URL}user/${user_id}`);
+      const {msg} = res.data;
+      if (res) {
+        console.log(msg);
+        context.commit('setMessage', msg);
+      }
+    },
+
+    // update a user
+    async updateUser(context, payload){
+      try { 
+        const res = await axios.put(`${URL}/user/${payload.user_id}`, payload);
+        const {msg} = res.data;
+        if (res) {
+          console.log(msg);
+          context.commit('setMessage', msg);
+        }
+      }
+      catch (err) {
+        console.error('Error: ', err);
+      }
+    },
+
     async fetchUsers(context){
       try{  
         const res = await axios.get(`${URL}users`);
@@ -119,6 +145,7 @@ export default createStore({
         await axios.post(`${URL}user/${payload.user_id}/cart`, payload)
         .then((data)=> {
           statusCode = data.status
+   
           message = data
         })
         .then(()=>{
@@ -142,16 +169,6 @@ export default createStore({
     },
     
 
-    async deleteUser(context, user_id){
-      console.log('Statement 1 reached');
-      const res = await axios.delete(`${URL}user/${user_id}`);
-      console.log('Statement 2 reached');
-      const {msg} = res;
-      if (res) {
-        console.log(msg);
-        context.commit('setMessage', msg);
-      }
-    },
 
     async toggleAdminState(context, payload){
       let user_id = payload.user_id;

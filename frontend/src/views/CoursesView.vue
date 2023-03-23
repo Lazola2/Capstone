@@ -43,7 +43,9 @@
 
         <!--  display items based on condition -->
         <div v-if="courses && !filteredCourses && !sorted" class="courses-wrapper flex-wrap gap-4 my-4 mx-5">
-            <div class="course"  v-for="course in courses" :key="course.course_id">
+            <div class="course position-relative"  v-for="course in courses" :key="course.course_id">
+                <!-- <i v-if="course.status === 'in cart'"
+                    class="bi bi-download download-button position-absolute top-0"></i> -->
                 <div class="picture" :style="{backgroundImage: `
                     linear-gradient(rgba(0,0,0,.2),rgba(0,0,0,.2)), 
                     url(${course.image_link})`}"
@@ -281,6 +283,27 @@ export default {
 }
 </script>
 <style scoped>
+    .download-button {
+        background: #fff;
+        color: black;
+        font-weight: 900;
+        padding: 0 .2rem;
+        border-radius: 2px;
+        right: 0;
+        margin: 3px;
+        font-size: 15px;
+        box-shadow: 2px 5px 10px 0 rgb(50, 50, 50);
+    }
+    .download-button:hover {
+        background: #d8d7d7;
+        color: black;
+    }
+
+    .download-button:active {
+        background: #232323;
+        color: rgb(255, 255, 255);
+    }
+
     .courses-section{
         height: 91vh;
     }

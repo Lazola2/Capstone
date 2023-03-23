@@ -3,8 +3,12 @@
         <div class="title d-flex align-items-center">
             <h1 class="text-center w-100">Cart</h1>
         </div>
-        <div class="items d-flex flex-wrap gap-3" v-if="cartItems">
-            <div class="item col-12 col-md-6" v-for="item in cartItems" :key="item">
+        <div class="items d-flex flex-wrap gap-3 overflow-y-auto" v-if="cartItems">
+            <div
+                :class="{'added' : itemsIDsToCheckout.includes(item.cart_id), 
+                            '' : !itemsIDsToCheckout.includes(item.cart_id) }" 
+                class="item col-12 col-md-6" v-for="item in cartItems" :key="item"
+                @click="addToItemsToPurchase(item)">
                 <img :src="item.image_link" alt="">
                 <div class="content d-flex">
                     <div class="left-content">
@@ -25,16 +29,17 @@
                     {{ cartItems?.length }} items selected
                 </p>
                 <p class="total-price text-center">
-                    Total : R {{cartTotal}} 
+                    Total : R {{cartTotal(cartItems)}} 
                 </p>
             </div>
             <div class="buttons">
-                <button class="rounded-1 btn-checkout btn btn-dark w-100">Checkout</button>
+                <button class="rounded-1 btn-checkout btn btn-dark w-100" @click.prevent="redirectToCheckout">Checkout</button>
             </div>
         </div>
     </section>
 </template>
 <script>
+import router from '@/router';
 export default {
     name: 'CartSection',
     computed: {
@@ -44,7 +49,8 @@ export default {
     },
     data(){
         return {
-            total: 0
+            total: 0, // delete this value
+            itemsIDsToCheckout: []
         }
     },
     methods: {
@@ -62,11 +68,28 @@ export default {
             }
             return str
         },
-        cartTotal(){
+        cartTotal(cartItems){
             let sum = 0
-            this.cartItems.forEach(item => {
-                sum = sum + item.price
+            try{
+                cartItems.forEach(item => {
+                sum += item.price
             });
+            return sum
+            } catch(err){
+                console.warn('Items Loading');
+            } 
+        },
+        redirectToCheckout(){
+            router.push('checkout')
+        },
+        addToItemsToPurchase(item){
+            if (this.itemsIDsToCheckout.includes(item.cart_id)){
+                this.itemsIDsToCheckout = this.itemsIDsToCheckout.filter(cart_id => {
+                    return cart_id !== item.cart_id
+                })
+            }
+            this.itemsIDsToCheckout.push(item.cart_id);
+            // alert('Clicked item with id: ' + item.cart_id)
         }
     },
     
@@ -75,7 +98,7 @@ export default {
 <style scoped>
     .cart-section {
         display: grid;
-        width: 100vw;
+      
         height: 91vh;
         grid-template-columns: 4fr 1.5fr;
         grid-template-rows: 1fr 5fr;
@@ -93,6 +116,10 @@ export default {
         flex-wrap: wrap;
     }
    */
+
+   .added {
+    opacity: .5;
+   }
     .item {
         height: 80px;
         width: 400px;
