@@ -3,17 +3,25 @@
         <div class="title d-flex align-items-center">
             <h1 class="text-center w-100">Cart</h1>
         </div>
-        <div class="items d-flex flex-wrap gap-3 overflow-y-auto" v-if="cartItems">
+        <div class="items  my-0 py-0 d-flex flex-wrap gap-3 overflow-y-auto" v-if="cartItems">
             <div
                 :class="{'added' : itemsIDsToCheckout.includes(item.cart_id), 
                             '' : !itemsIDsToCheckout.includes(item.cart_id) }" 
                 class="item col-12 col-md-6" v-for="item in cartItems" :key="item"
-                @click="addToItemsToPurchase(item)">
+               >
                 <img :src="item.image_link" alt="">
                 <div class="content d-flex">
-                    <div class="left-content">
-                        <p class="content-title">{{item.title}}</p>
-                        <p class="description">{{truncateString(item.course_description)}}</p>
+                    <div class="left-content d-flex flex-column gap-0">
+                        <p class="content-title my-0 py-0">{{item.title}}</p>
+                        <div class="wrapper d-flex gap-3 align-items-center">
+                            <p class="quantity my-0 py-0"> Quantity: {{item.quantity}} </p>
+                            <div class="item-buttons d-flex gap-1">
+                                <button @click.prevent="increaseQuantity(item)">+</button>
+                                <button @click.prevent="decreaseQuantity(item)">-</button>
+                            </div> 
+                        </div>
+
+                        <p class="description my-0 py-0">{{truncateString(item.course_description)}}</p>
                     </div>
                     <div class="right-content">
                         <p class="price">R{{item.price}}</p>
@@ -44,6 +52,7 @@ export default {
     name: 'CartSection',
     computed: {
         cartItems(){
+            console.log('Cart: ',this.$store.state.userCart);
             return this.$store.state.userCart;
         },       
     },
@@ -72,7 +81,7 @@ export default {
             let sum = 0
             try{
                 cartItems.forEach(item => {
-                sum += item.price
+                sum += item.price * item.quantity
             });
             return sum
             } catch(err){
@@ -90,6 +99,28 @@ export default {
             }
             this.itemsIDsToCheckout.push(item.cart_id);
             // alert('Clicked item with id: ' + item.cart_id)
+        },
+        async increaseQuantity(item){
+            let payload = {
+                user_id: item.user_id,
+                cart_id: item.cart_id,
+                quantity: item.quantity + 1
+            }
+            await this.$store.dispatch('updateCart', payload);
+            await this.$store.dispatch('getCartsForUser', payload.user_id)
+        },
+        async decreaseQuantity(item){
+            let updatedQuantity = item.quantity;
+            if (updatedQuantity !== 1) {
+                updatedQuantity--;
+            }
+            let payload = {
+                user_id: item.user_id,
+                cart_id: item.cart_id, 
+                quantity: updatedQuantity
+            }
+            await this.$store.dispatch('updateCart', payload);
+            await this.$store.dispatch('getCartsForUser',payload.user_id)
         }
     },
     
@@ -130,6 +161,29 @@ export default {
         padding: 0 .5rem;
         border-radius: 2px;
         gap: 1rem;
+    }
+
+    .item-buttons button {
+        width: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 15px;
+        border: none;
+        background: linear-gradient(to top,rgb(25, 25, 25), rgb(34, 34, 34), rgb(94, 94, 94));
+        border-radius: 2px;
+        color: #fff;
+    }
+    
+    .item-buttons button:hover {
+        background: linear-gradient(to top,rgb(94, 94, 94), rgb(25, 25, 25), rgb(34, 34, 34) );
+    }
+    .item-buttons button:active {
+        background: rgb(0, 0, 0);
+    }
+
+    .quantity {
+        font-size: 12px;
     }
 
     img {

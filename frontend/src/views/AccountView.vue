@@ -51,7 +51,6 @@ export default {
                 this.showAlert = true
             }
             else {
-                
                 this.message.type = this.$store.state.status === 401 ?
                 'error' : 'success'
                 this.message.text = this.$store.state.message

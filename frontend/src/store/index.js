@@ -2,12 +2,13 @@ import { createStore } from 'vuex'
 import axios from 'axios';
 import router from '@/router'
 const URL = 'https://capstone-api-qno4.onrender.com/';
+// const URL = 'http://localhost:5050/';
 
 export default createStore({
   state: {
     // fetch all users
     users: null,
-
+    signUpResponse: null,
     // user related states
     loggedUser: null,
     userDetails: null,
@@ -51,6 +52,9 @@ export default createStore({
     },
     setStatus(state, status){
       state.status = status
+    },
+    setSignUpResponse(state, signUpResponse){
+      state.signUpResponse = signUpResponse
     }
   },
   actions: {
@@ -70,8 +74,7 @@ export default createStore({
       }
       catch(err) {
         context.commit('setMessage', err.response?.data.err);
-        context.commit('setStatus', err.response?.status);
-        
+        context.commit('setStatus', err.response?.status);    
       }
     },
     async signUp(context, userData){
@@ -82,7 +85,8 @@ export default createStore({
         if(signUpResponse){
           this.state.showSignIn = true;
           this.state.spinner = false;
-          this.state.registered = true
+          this.state.registered = true;
+          context.commit('setSignUpResponse', signUpResponse)
         }
       }
       catch(err) {
@@ -103,7 +107,7 @@ export default createStore({
     // update a user
     async updateUser(context, payload){
       try { 
-        const res = await axios.put(`${URL}/user/${payload.user_id}`, payload);
+        const res = await axios.put(`${URL}user/${payload.user_id}`, payload);
         const {msg} = res.data;
         if (res) {
           console.log(msg);
@@ -126,6 +130,20 @@ export default createStore({
     },
     
     // fetch courses
+    async addCourse(context, payload){
+      try {
+        console.log(payload);
+        const res = await axios.post(`${URL}items`, payload);
+        if (res) {
+          let {msg} = res.data;
+          context.commit('setMessage', msg);
+        }
+      }
+      catch(err) {
+        console.error(err);
+      }
+    },
+
     async fetchCourses(context) {
       try{  
         const res = await axios.get(`${URL}items`);
@@ -158,6 +176,23 @@ export default createStore({
       }
     },
 
+    // update the cart
+    async updateCart(context, payload){
+      try{
+        let res = await axios.put(`${URL}user/${payload.user_id}/cart/${payload.cart_id}`, {
+          quantity: payload.quantity
+        });
+        let {msg} = res.data;
+        if (res) {
+          console.log('Message: ', msg);
+          context.commit('setMessage', msg);
+        }
+      }
+      catch(err){
+        console.error(err);
+      }
+    },
+
     async getCartsForUser(context, payload){
       // /user/:id/carts
         try{  
@@ -184,6 +219,7 @@ export default createStore({
     // delete course: not working
     async deleteCourse(context, course_id){
       console.log(course_id);
+
       const res = await axios.delete(`${URL}item/${course_id}`);
       if (res) {
         const {msg} = res.data
@@ -194,18 +230,11 @@ export default createStore({
 
     // update course details
     async updateCourse(context, payload){
-      let course_id = payload.course_id;
-      payload = {
-          title: payload.title,
-          category: payload.category,
-          description: payload.course_description,
-          price: payload.price,
-          image_link: payload.image_link,
-          rating: payload.rating,
-      }
-      console.log(course_id);
-      console.log(payload);
-      const res = await axios.put(`${URL}item/${course_id}`, payload);
+      let id =  payload.course_id;
+      let url = `${URL}item/${id}`
+      console.log('link: ', url);
+      
+      const res = await axios.put(url, payload.updatedInfo);
       const {msg} = res.data;
       if (res) {
         console.log(msg);

@@ -16,6 +16,7 @@ export default {
     props: ['message', 'showAlert'],
     name: 'SweetAlert',
   }
+  
 </script>
 <style scoped>
     .alert { 

@@ -44,8 +44,13 @@
                         <option value="Female">Female</option>
                     </select>
                     <div class="button-holder w-100 d-flex justify-content-center">
-                        <button class="update-button dark-btn w-50"
-                           data-bs-toggle="modal" data-bs-target="#modal" @click.prevent>Update</button>
+                        <button class="update-button dark-btn w-50 d-flex align-items-center gap-1 justify-content-center"
+                           data-bs-toggle="modal" data-bs-target="#modal" @click.prevent>
+                            Update  
+                            <span v-if="showSpinner && clickedUpdate" 
+                                class="spinner-border spinner-border-sm" role="status" aria-hidden="true">
+                            </span>
+                        </button>
                     </div>
                 </div>
             </form>
@@ -61,7 +66,11 @@
                     <p class="email">{{loggedUser?.data.result.email}}</p>
                     <p class="role"> Role: {{loggedUser?.data.result.user_role}}</p>
                     <button class="delete-account w-50 dark-btn"
-                        @click.prevent="deleteAccount">Delete Account</button>
+                        @click.prevent="deleteAccount">Delete Account
+                        <span v-if="showSpinner && clickedDelete" 
+                                class="spinner-border spinner-border-sm" role="status" aria-hidden="true">
+                            </span>
+                    </button>
                 </div>
                 
             </div>
@@ -86,7 +95,13 @@ export default {
                 user_role: this.$store.state.loggedUser?.data.result.user_role  ,
                 profile_image:  this.$store.state.loggedUser?.data.result.profile_image,
                 user_password: ''
-            }
+            },
+            message: {
+                type: '',
+                text: ''
+            },
+            clickedDelete: false,
+            clickedUpdate: false
         }
     },
     components: {
@@ -96,23 +111,33 @@ export default {
         loggedUser(){
             return this.$store.state.loggedUser
         },
-        message(){
-            this.$store.state.message
-        }
     },
     methods: {
         async updateUserData(){
-            this.showSpinner = true
-            console.log('debug 1');
-            await this.$store.dispatch('updateUser', this.payload);
-            console.log('debug 2');
-            this.showSpinner= false;
+            this.clickedDelete = false;
+            this.clickedUpdate = true;
+            try {
+                this.showSpinner = true
+                await this.$store.dispatch('updateUser', this.payload);
+                this.message.text =  this.$store.state.message;
+                this.message.type = 'success';
+                this.showSpinner = false;
+                console.log();
+            }
+            catch(err) {
+                this.message.text =  this.$store.state.message;
+                this.message.type = 'error';
+            }
+
+            // show an alert
             this.showAlert = true;
             setTimeout(()=>{
                 this.showAlert = false
             },3000)
         },
         async deleteAccount(){
+            this.clickedDelete = true;
+            this.clickedUpdate = false;
             let answer = prompt('Are you sure you want to delete your account? (y/n)');
             if (answer.toLowerCase() === 'y') {
                 console.log('Deleting account...');

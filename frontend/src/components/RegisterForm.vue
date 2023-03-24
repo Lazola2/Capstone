@@ -1,5 +1,6 @@
 <template>
-        <div class="right-side">
+    <div class="right-side">
+            <SweetAlert :message="message" :showAlert="showAlert"/>
             <form class="h-100 w-100 d-flex flex-column gap-1 align-items-center register-form">
                 <h2>Register</h2>
                 <div class="name-surname w-100 d-flex gap-1">
@@ -39,11 +40,20 @@
 </template>
 <script>
 import router from '@/router';
+import SweetAlert from './SweetAlert.vue';
 
 export default {
+    components: {
+        SweetAlert,
+    },
     data(){
         return{
             showSpinner: false,
+            showAlert: false,
+            message: {
+                text: '',
+                type: ''
+            },
             payload: {
                 firstname: '',
                 lastname: '',
@@ -102,8 +112,17 @@ export default {
                 email: data.email,
                 user_password: data.user_password
             };
-            this.$store.state.showRegister = false;
-            this.$store.state.showSignIn = true;
+            
+            if (this.$store.state.signUpResponse?.status === 200){
+                this.message.type = 'success';
+            }
+            this.message.text = this.$store.state.signUpResponse?.data.msg;
+            this.showAlert = true;
+
+            setTimeout(()=>{
+                this.$store.state.showRegister = false;
+                this.$store.state.showSignIn = true;
+            },3000)
         },
         redirectToAbout(){
             router.push('about');

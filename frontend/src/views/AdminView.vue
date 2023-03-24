@@ -4,20 +4,22 @@
             <div class="modal-dialog">
               <div class="modal-content">
                 <div class="modal-header">
-                  <h5 class="modal-title">Update Course</h5>
+                  <h5 class="modal-title text-black" v-if="addCourseButton && !updateCourseButton">Add Course</h5>
+                  <h5 class="modal-title text-black" v-else>Update Course</h5>
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
-                  <input class="form-control" type="text" v-model="update_course_payload.title">
-                  <input class="form-control" type="text" v-model="update_course_payload.category">
-                  <input class="form-control" type="text" v-model="update_course_payload.course_description">
-                  <input class="form-control" type="text" v-model="update_course_payload.price">
-                  <input class="form-control" type="text" v-model="update_course_payload.image_link">
-                  <input class="form-control" type="text" v-model="update_course_payload.rating">
+                <div class="modal-body d-flex flex-column gap-1">
+                  <input placeholder="title" class="form-control" type="text" v-model="course_payload.title">
+                  <input placeholder="category" class="form-control" type="text" v-model="course_payload.category">
+                  <input placeholder="description" class="form-control" type="text" v-model="course_payload.course_description">
+                  <input placeholder="price" class="form-control" type="text" v-model="course_payload.price">
+                  <input placeholder="image link" class="form-control" type="url" v-model="course_payload.image_link">
+                  <input placeholder="rating" class="form-control" type="text" v-model="course_payload.rating">
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                  <button type="button" class="btn btn-primary" @click.prevent="saveUpdateChanges">Save changes</button>
+                  <button type="button" class="btn btn-success" v-if="addCourseButton && !updateCourseButton" @click.prevent="addCourse">Add course</button>
+                  <button type="button" class="btn btn-primary" v-if="updateCourseButton && !addCourseButton" @click.prevent="saveUpdateChanges()">Save changes</button>
                 </div>
               </div>
             </div>
@@ -86,7 +88,8 @@
             </div>
         
            <div class="w-100 mt-3 d-flex justify-content-center" v-if="showCourses">
-                <button class="add-course">+Add Course</button>
+                <button class="add-course" @click.prevent="showAddCourseModal"
+                data-bs-toggle="modal" data-bs-target="#modal">+Add Course</button>
            </div>
         </div>
         
@@ -102,6 +105,8 @@ export default {
     },
     data(){
         return {
+            addCourseButton: false,
+            updateCourseButton: false,
             showUsers: true,
             showCourses: false,
             selectedCourse: null,
@@ -111,15 +116,15 @@ export default {
                 user_role: 'admin',
                 user_password: ''
             },
-            update_course_payload: {
-                course_id: '',
+            course_payload: {
                 title: '',
                 category: '',
                 course_description: '',
                 price: '',
                 image_link: '',
                 rating: ''
-            }
+            },
+            selectedCourse: null
         }
     },
     computed: {
@@ -189,19 +194,53 @@ export default {
 
         // set the payload to update the course
         setUpdateCoursePayload(course){
-            this.update_course_payload.course_id = course.course_id;
-            this.update_course_payload.title = course.title;
-            this.update_course_payload.category = course.category;
-            this.update_course_payload.course_description = course.course_description;
-            this.update_course_payload.price = course.price;
-            this.update_course_payload.image_link = course.image_link;
-            this.update_course_payload.rating = course.rating;
+            this.selectedCourse = course;
+            this.course_payload.title = course.title;
+            this.course_payload.category = course.category;
+            this.course_payload.course_description = course.course_description;
+            this.course_payload.price = course.price;
+            this.course_payload.image_link = course.image_link;
+            this.course_payload.rating = course.rating;
+
+            this.updateCourseButton = true;
+            this.addCourseButton = false;
         },
 
         // save update changes
         async saveUpdateChanges(){
-            this.$store.dispatch('updateCourse', this.update_course_payload);
+            let payload =  {
+                course_id: this.selectedCourse.course_id,
+                updatedInfo: this.course_payload
+            }
+            this.$store.dispatch('updateCourse', payload);
+        },
+
+        resetPayload(){
+            this.course_payload =  {
+                title: '',
+                category: '',
+                course_description: '',
+                price: '',
+                image_link: '',
+                rating: ''
+            }
+        },
+
+        // show modal to add a course
+        showAddCourseModal(){
+            this.resetPayload();
+            this.addCourseButton = true;
+            this.updateCourseButton = false;
+        },
+
+        // add a course
+        async addCourse(){
+            console.log('Adding a course...');
+            await this.$store.dispatch('addCourse', this.course_payload);
+            console.log('Course added.');
         }
+
+
     },
     created(){
         this.$store.dispatch('fetchUsers');

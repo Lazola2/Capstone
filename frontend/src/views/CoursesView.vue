@@ -219,7 +219,7 @@ export default {
             this.selectedLink = num;
         },
 
-        // searchCourse
+        // search for a course
         searchCourse(){ 
             if (['',null].includes(this.searchString)) {
                 this.searchResults = null;
@@ -254,7 +254,7 @@ export default {
            
         },
 
-        // truncate a string
+        // truncate a string for space on the component
         truncateString(str){
             if (str?.length > 15){
                 let arrString = str.split('');
@@ -270,15 +270,15 @@ export default {
             return str
         }
     },
-    created() {
-        this.$store.dispatch('fetchCourses');
-        // alert('User id: ', this.$store.dispatch('getCartsForUser'));
 
+    created() {
+        // fetch the courses
+        this.$store.dispatch('fetchCourses');
+        
+        // get the carts for a user
         this.$store.dispatch('getCartsForUser',{
             user_id: this.$store.state.loggedUser?.data.result.user_id
         });
-
-        console.log('User Data from SStorage: ', JSON.parse(sessionStorage.getItem('loggedUser')));
     }
 }
 </script>
