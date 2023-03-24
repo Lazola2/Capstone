@@ -1,6 +1,7 @@
 <template>
+    <SweetAlert :message="message" :showAlert="showAlert"/>
     <section class="admin-section d-flex align-items-center justify-content-center d-flex flex-column">
-        <div class="modal" tabindex="-1" id="modal">
+         <div class="modal" tabindex="-1" id="modal">
             <div class="modal-dialog">
               <div class="modal-content">
                 <div class="modal-header">
@@ -18,8 +19,8 @@
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                  <button type="button" class="btn btn-success" v-if="addCourseButton && !updateCourseButton" @click.prevent="addCourse">Add course</button>
-                  <button type="button" class="btn btn-primary" v-if="updateCourseButton && !addCourseButton" @click.prevent="saveUpdateChanges()">Save changes</button>
+                  <button type="button" class="btn btn-success" data-bs-dismiss="modal" v-if="addCourseButton && !updateCourseButton" @click.prevent="addCourse">Add course</button>
+                  <button type="button" class="btn btn-primary" data-bs-dismiss="modal"  v-if="updateCourseButton && !addCourseButton" @click.prevent="saveUpdateChanges()">Save changes</button>
                 </div>
               </div>
             </div>
@@ -97,14 +98,19 @@
 </template>
 <script>
 import LoaderComponent from '@/components/Loader.vue'
-// import UpdateModal from '@/components/UpdateModal.vue';
+import SweetAlert from '@/components/SweetAlert.vue';
 export default {
     components: {
         LoaderComponent,
-        // UpdateModal
+        SweetAlert,
     },
     data(){
         return {
+            message: {
+                text: '',
+                type: ''
+            },
+            showAlert: false,
             addCourseButton: false,
             updateCourseButton: false,
             showUsers: true,
@@ -150,26 +156,68 @@ export default {
         async deleteUser(user_id){
             let response = window.prompt('Are you sure you want to delete the user Y/N?');
             if (response.toLowerCase() === 'y'){
-                await this.$store.dispatch('deleteUser', user_id);
-                await this.$store.dispatch('fetchUsers');
-                location.reload();
-                return
+                try {
+                    await this.$store.dispatch('deleteUser', user_id);
+                    await this.$store.dispatch('fetchUsers');
+
+                    // set alert data
+                    this.message.type = 'success'
+                    this.message.text = this.$store.state.message
+                    this.showAlert = true;
+
+                    setTimeout(()=> {
+                        this.showAlert = false;
+                        location.reload();
+                    }, 3000)
+                    return
+                }
+                catch(err) {
+                    console.error(err);
+                    this.message.type = 'error'
+                    this.message.text = this.$store.state.message
+                    this.showAlert = true;
+
+                    setTimeout(()=> {
+                        this.showAlert = false;
+                    }, 3000)
+                }
             }
-            alert('Operation cancelled.');   
+            this.message.type = 'error'
+            this.message.text = this.$store.state.message
+            this.showAlert = true;
+
+            setTimeout(()=> {
+                this.showAlert = false;
+            }, 3000)   
         },
         updateAdmin(user_id){
             this.showUpdateModal= true;
         },
+        
         async toggleAdminState(user){
             // console.log(user.user_id);
-            let payload = {
+            try {
+                let payload = {
                 user_id: user.user_id,
                 user_role: user.user_role === 'admin' ? 'user' : 'admin'
+                }
+                await this.$store.dispatch('toggleAdminState', payload);
+                await this.$store.dispatch('fetchUsers');
+                this.message.text = user.user_role === 'user' ?  'User is now an admin' : 'Role changed to user'
+                this.message.type = 'success'
             }
-             await this.$store.dispatch('toggleAdminState', payload);
-             location.reload();
-             await this.$store.dispatch('fetchUsers');
+            catch(err){
+                console.error(err);
+                this.message.text =  'Sorry, an error occurred'
+                this.message.type = 'error'
+            }
+            this.showAlert = true;
+            setTimeout(() => {
+                this.showAlert = false
+                location.reload();
+            }, 3000)
         },
+           
         truncateString(str){
             if (str.length > 15){
                 let arrString = str.split('');
@@ -187,9 +235,21 @@ export default {
 
         // course methods
         async deleteCourse(course_id){
-            await this.$store.dispatch('deleteCourse', course_id);
-            await this.$store.dispatch('fetchCourses');
-            // location.reload();
+            try {
+                await this.$store.dispatch('deleteCourse', course_id);
+                this.message.text = this.$store.state.message
+                this.message.type = 'success'
+            }
+            catch(err) {
+                console.log(err);
+                this.message.text = this.$store.state.message
+                this.message.type = 'error'
+            }
+            this.showAlert = true
+            setTimeout(()=> {
+                this.showAlert= false
+                this.$store.dispatch('fetchCourses');
+            },3000)
         },
 
         // set the payload to update the course
@@ -210,9 +270,23 @@ export default {
         async saveUpdateChanges(){
             let payload =  {
                 course_id: this.selectedCourse.course_id,
-                updatedInfo: this.course_payload
+                updatedInfo: this.course_payload,
             }
-            this.$store.dispatch('updateCourse', payload);
+            try {
+                await this.$store.dispatch('updateCourse', payload);
+                this.message.text = this.$store.state.message;
+                this.message.type = 'success'
+            }
+            catch(err){
+                console.error(err);
+                this.message.text = this.$store.state.message;
+                this.message.type = 'error'
+            }
+            this.showAlert = true;
+            setTimeout(()=> {
+                this.showAlert = false;
+                this.$store.dispatch('fetchCourses');
+            },3000)
         },
 
         resetPayload(){
@@ -235,9 +309,22 @@ export default {
 
         // add a course
         async addCourse(){
-            console.log('Adding a course...');
-            await this.$store.dispatch('addCourse', this.course_payload);
-            console.log('Course added.');
+            try {
+                await this.$store.dispatch('addCourse', this.course_payload);
+                this.message.text = this.$store.state.message
+                this.message.type = 'success'
+            }
+            catch(err) {
+                console.error(err);
+                this.message.text = this.$store.state.message
+                this.message.type = 'success'
+            }
+            this.showAlert = true
+            setTimeout(()=>{
+                this.showAlert = false;
+                location.reload();
+            }, 3000);
+         
         }
 
 

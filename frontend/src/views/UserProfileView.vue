@@ -122,7 +122,14 @@ export default {
                 this.message.text =  this.$store.state.message;
                 this.message.type = 'success';
                 this.showSpinner = false;
-                console.log();
+                
+                // update the logged user with the payload
+                let user = this.loggedUser?.data.result; 
+                for (let property in this.payload){
+                    user[property] = this.payload[property];
+                }
+                this.loggedUser.data.result = user;
+                sessionStorage.setItem('loggedUser', JSON.stringify(this.loggedUser));
             }
             catch(err) {
                 this.message.text =  this.$store.state.message;
@@ -136,17 +143,41 @@ export default {
             },3000)
         },
         async deleteAccount(){
-            this.clickedDelete = true;
-            this.clickedUpdate = false;
             let answer = prompt('Are you sure you want to delete your account? (y/n)');
             if (answer.toLowerCase() === 'y') {
-                console.log('Deleting account...');
-                await this.$store.dispatch('deleteUser', this.loggedUser?.data.result.user_id);
+                try {
+                    this.clickedDelete = true;
+                    this.clickedUpdate = false;
+                    
+                    this.showSpinner = true;
+                    await this.$store.dispatch('deleteUser', this.loggedUser?.data.result.user_id);
+                    this.showSpinner = false;
 
-                // clear the session storage
-                this.$store.state.loggedUser = null;
-                sessionStorage.clear();
-                router.push('login');
+                    // show alert
+                    this.message.text = this.$store.state.message;
+                    this.message.type = 'success';
+
+                    this.showAlert = true;
+                    setTimeout(()=>{
+                        this.$store.state.loggedUser = null;
+                        sessionStorage.clear();
+                        router.push('login');
+                    }, 3000);
+                    
+                }
+                catch(err) {
+                    console.error(err);
+                    this.message.text = this.$store.state.message;
+                    this.message.type = 'error';
+
+                    this.showAlert = true;
+                    setTimeout(()=>{
+                        this.$store.state.loggedUser = null;
+                        sessionStorage.clear();
+                        router.push('login');
+                    }, 3000);
+                }
+              
             }
             else {
                 return;
@@ -198,6 +229,7 @@ export default {
         position: relative;
         height: 150px;
         width: 150px;
+        object-fit: cover;
         border-radius: 50%;
         transform: translate(50%, -25%);
         border: 2px solid #939393;

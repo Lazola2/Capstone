@@ -96,11 +96,16 @@ export default createStore({
 
     // delete a user
     async deleteUser(context, user_id){
-      const res = await axios.delete(`${URL}user/${user_id}`);
-      const {msg} = res.data;
-      if (res) {
-        console.log(msg);
-        context.commit('setMessage', msg);
+      try {
+        const res = await axios.delete(`${URL}user/${user_id}`);
+        if (res) {
+          const {msg} = res.data;
+          console.log(msg);
+          context.commit('setMessage', msg);
+        }
+      }
+      catch(err) {
+        console.error(err);
       }
     },
 
@@ -135,6 +140,7 @@ export default createStore({
         console.log(payload);
         const res = await axios.post(`${URL}items`, payload);
         if (res) {
+         
           let {msg} = res.data;
           context.commit('setMessage', msg);
         }
@@ -203,8 +209,6 @@ export default createStore({
         }
     },
     
-
-
     async toggleAdminState(context, payload){
       let user_id = payload.user_id;
       const res = await axios.put(`${URL}admin/${user_id}`,payload);
@@ -232,7 +236,6 @@ export default createStore({
     async updateCourse(context, payload){
       let id =  payload.course_id;
       let url = `${URL}item/${id}`
-      console.log('link: ', url);
       
       const res = await axios.put(url, payload.updatedInfo);
       const {msg} = res.data;
@@ -241,6 +244,37 @@ export default createStore({
         context.commit('setMessage', msg);
       }
     },
+
+    // clear a user's cart
+    async clearCart(context, user_id){
+      try {
+        const res = await axios.delete(`${URL}user/${user_id}/cart`);
+        if (res) {
+          const {msg} = res.data;
+          context.commit('setMessage', msg);
+        }
+      }
+      catch(err){
+        console.error(err);
+        context.commit('setMessage', err);
+      }
+    },
+
+    // delete cart item
+    async deleteCartItem(context, payload){
+      try {
+        const res = axios.delete(`${URL}user/${payload.user_id}/cart/${payload.cart_id}`);
+        if (res) {
+          const {msg} = res.data;
+          context.commit('setMessage', msg);
+        }
+      }
+      catch(err){
+        console.error(err);
+        context.commit('setMessage', err);
+      }
+    }
+
   },
   modules: {
   }

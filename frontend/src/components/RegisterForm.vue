@@ -101,11 +101,15 @@ export default {
 
             // console.log(this.payload);
             if (this.payload.user_password !== this.payload.repeat_user_password){
-                alert('Passwords do not match');
+                this.message.text = 'Passwords do not match';
+                this.message.type = 'error';
+                this.showAlert = true;
+                setTimeout(()=>{
+                    this.showAlert = false;
+                }, 3000)
                 return;
             }
 
-            console.log(this.showSignIn);
             this.showSpinner = true;
             await this.$store.dispatch('signUp', data);
             this.$store.state.userDetails = {
@@ -130,7 +134,12 @@ export default {
         validateSignInPayload(payload){
             for (let property in payload){
                 if ( payload[property] === '' || payload[property] === undefined){
-                    alert(`Please enter value in the edits.`);
+                    this.message.text = 'Please enter value in the input fields';
+                    this.message.type = 'error';
+                    this.showAlert = true;
+                    setTimeout(()=>{
+                        this.showAlert = false;
+                    }, 3000)
                     return false
                 }
             }

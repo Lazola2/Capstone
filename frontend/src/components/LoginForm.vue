@@ -113,6 +113,9 @@ export default {
                     this.message.text = 'Please enter value in the edits.'
                     this.message.type = 'error'
                     this.showAlert = true;
+                    setTimeout(()=>{
+                        this.showAlert = false;
+                    }, 3000)
                     return false
                 }
             }

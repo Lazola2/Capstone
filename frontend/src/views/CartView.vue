@@ -1,13 +1,16 @@
 <template>
+    <SweetAlert :message="message" :showAlert="showAlert"/>
     <section class="cart-section">
         <div class="title d-flex align-items-center">
             <h1 class="text-center w-100">Cart</h1>
         </div>
-        <div class="items  my-0 py-0 d-flex flex-wrap gap-3 overflow-y-auto" v-if="cartItems">
-            <div
+        <div class="items my-0 py-0 " v-if="cartItems">
+            <div class="wrapper w-100 d-flex flex-wrap gap-3 ">
+
+                <div data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Tooltip on top"
                 :class="{'added' : itemsIDsToCheckout.includes(item.cart_id), 
                             '' : !itemsIDsToCheckout.includes(item.cart_id) }" 
-                class="item col-12 col-md-6" v-for="item in cartItems" :key="item"
+                class="item mb-0 mt-0 pt-0 pb-0" v-for="item in cartItems" :key="item"
                >
                 <img :src="item.image_link" alt="">
                 <div class="content d-flex">
@@ -28,6 +31,7 @@
                         <p class="rating">{{item.rating}} <i class="bi bi-star-fill star"></i></p>
                     </div>
                 </div>
+                </div>
             </div>
         </div>
         <div class="summary gap-2 d-flex flex-column">
@@ -40,14 +44,16 @@
                     Total : R {{cartTotal(cartItems)}} 
                 </p>
             </div>
-            <div class="buttons">
+            <div class="buttons d-flex flex-column gap-2">
                 <button class="rounded-1 btn-checkout btn btn-dark w-100" @click.prevent="redirectToCheckout">Checkout</button>
+                <button class="rounded-1 btn-checkout btn btn-danger w-100" @click.prevent="clearCart">Clear Cart</button>
             </div>
         </div>
     </section>
 </template>
 <script>
 import router from '@/router';
+import SweetAlert from '@/components/SweetAlert.vue';
 export default {
     name: 'CartSection',
     computed: {
@@ -56,10 +62,18 @@ export default {
             return this.$store.state.userCart;
         },       
     },
+    components: {
+        SweetAlert
+    },
     data(){
         return {
             total: 0, // delete this value
-            itemsIDsToCheckout: []
+            itemsIDsToCheckout: [],
+            message: {
+                text: '',
+                type: ''
+            },
+            showAlert: false
         }
     },
     methods: {
@@ -121,6 +135,25 @@ export default {
             }
             await this.$store.dispatch('updateCart', payload);
             await this.$store.dispatch('getCartsForUser',payload.user_id)
+        },
+        
+        async clearCart(){
+            let user_id = this.$store.state.loggedUser?.data.result.user_id;
+            try {
+                await this.$store.dispatch('clearCart', user_id);
+                this.message.text = this.$store.state.message 
+                this.message.type = 'success'
+            }
+            catch(err){
+                console.error(err);
+                this.message.text = 'Sorry, Could not clear the cart an error occurred.' 
+                this.message.type = 'error'
+            }
+            this.showAlert = true;
+            setTimeout(()=>{
+                this.showAlert = false;
+                location.reload();
+            }, 3000);
         }
     },
     
