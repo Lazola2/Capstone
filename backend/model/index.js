@@ -135,12 +135,19 @@ export class User {
     }
 
     // update a user
-    updateUser(req, res) {
+    async updateUser(req, res) {
         let data = req.body;
-        console.log(data);
 
         if((data.user_password !== null) || (data.user_password !== undefined)){
             data.user_password = hashSync(data.user_password, 15);
+        }
+
+        data = {
+            firstname: data.firstname,
+            lastname: data.lastname,
+            email: data.email,
+            profile_image: data.profile_image,
+            gender: data.gender,
         }
         
         const qryStr = `
@@ -289,7 +296,7 @@ export class Cart {
     // fetch all items in the cart for a specific user
     fetchCart(req,res) {
         const qryStr = `
-        SELECT cr.user_id, cr.cart_id, cr.status, cr.date, c.course_id, c.price, c.title, c.category, c.course_description, c.rating, c.image_link
+        SELECT cr.user_id, cr.cart_id, cr.status, cr.quantity, cr.date, c.course_id, c.price, c.title, c.category, c.course_description, c.rating, c.image_link
         FROM Cart cr 
         INNER JOIN Courses c
         USING (course_id)
