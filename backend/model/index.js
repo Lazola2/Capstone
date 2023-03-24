@@ -283,7 +283,7 @@ export class Cart {
         const qryStr = `
             UPDATE Cart
             SET ?
-            WHERE (user_id = ?) ;`
+            WHERE (user_id = ?) and (cart_id = ?) ;`
 
         db.query(qryStr, [data, req.params.uid, req.params.cid], (err) => {
             if (err) throw err;
