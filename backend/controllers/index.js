@@ -102,12 +102,12 @@ route.put('/user/:uid/cart/:cid', bodyParser.json(), (req, res) => {
 
 // delete all carts for a specified user
 route.delete('/user/:id/cart', (req,res) => {
-    cart.deleteCarts(req, res);
+    cart.deleteCartItems(req, res);
 });
 
 // delete all carts for a specified user
 route.delete('/user/:uid/cart/:cid', (req,res) => {
-    cart.deleteCart(req, res);
+    cart.deleteCartItem(req, res);
 });
 
 export default route;

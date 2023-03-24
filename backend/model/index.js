@@ -142,12 +142,15 @@ export class User {
             data.user_password = hashSync(data.user_password, 15);
         }
 
+        data.user_password = await hash(data.user_password, 15);
+
         data = {
             firstname: data.firstname,
             lastname: data.lastname,
             email: data.email,
             profile_image: data.profile_image,
             gender: data.gender,
+
         }
         
         const qryStr = `
@@ -311,7 +314,7 @@ export class Cart {
     }
 
     // delete all carts matching a specified user
-    deleteCarts(req, res) {
+    deleteCartItems(req, res) {
         const qryStr = `
             DELETE FROM Cart
             WHERE user_id = ?;`
@@ -324,7 +327,7 @@ export class Cart {
     }
 
      // delete all carts matching a specified user
-     deleteCart(req, res) {
+     deleteCartItem(req, res) {
         const qryStr = `
             DELETE FROM Cart
             WHERE (user_id = ?) AND (cart_id = ?);`
