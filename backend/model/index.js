@@ -296,6 +296,22 @@ export class Cart {
         });
     }
 
+    // update all cart items
+    updateAllCartItems(req, res) {
+        let data = req.body;
+        const qryStr = `
+            UPDATE Cart
+            SET ?
+            WHERE (user_id = ?);`
+
+        db.query(qryStr, [data, req.params.id], (err) => {
+            if (err) throw err;
+            res.status(200).json({
+                msg: "Cart items have been updated"
+            });
+        });
+    }
+
     // fetch all items in the cart for a specific user
     fetchCart(req,res) {
         const qryStr = `

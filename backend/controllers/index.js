@@ -79,6 +79,7 @@ route.put('/item/:id', bodyParser.json(), (req, res)=> {
     course.updateCourse(req, res);
 });
 
+
 // Delete a course
 route.delete('/item/:id', (req, res)=> {
     course.deleteCourse(req, res);
@@ -99,6 +100,15 @@ route.get('/user/:id/carts', bodyParser.json(), (req, res) => {
 route.put('/user/:uid/cart/:cid', bodyParser.json(), (req, res) => {
     cart.updateCart(req, res);
 });
+
+
+// update a specified cart for a specified user
+route.put('/user/:id/cart', bodyParser.json(), (req, res) => {
+    cart.updateAllCartItems(req, res);
+});
+
+
+
 
 // delete all carts for a specified user
 route.delete('/user/:id/cart', (req,res) => {
