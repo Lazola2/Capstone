@@ -285,4 +285,51 @@ export default {
     .circle-2 {
         background: rgba(255, 225, 0, 0.9);
     }
+
+    @media screen and (max-width: 800px) {
+        .checkout-page {
+            height: 91vh;
+            display: grid;
+            grid-template-columns: 1fr;
+            grid-template-rows: 1fr 5fr;
+        }
+
+        .form-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .buttons {
+            margin-bottom: 3rem;
+        }
+    
+    }
+
+    @media screen and (max-width: 500px) {
+       .card {
+        display: none;
+       }
+
+       .form-container {
+        border: none;
+        height: auto !important;
+       }
+
+       form {
+        padding: 1rem !important;
+        width: 90%;
+       }
+
+       .buttons {
+            display: flex;
+            flex-direction: column;
+       }
+
+       .buttons button {
+            width: 100% !important;
+        }
+    
+    }
 </style>
