@@ -2,7 +2,7 @@
     <section class="about-section text-white pt-3">
        <div class="top-content  d-flex justify-content-center py-3 px-5 d-flex">
             <div class="content-side  p-5">
-                <h1 class="heading mb-4 text-center ">About Course It!</h1>
+                <h1 class="heading mb-4 text-center mt-3">About Course It!</h1>
                 <p class="paragraph text-center">
                     We provide the best courses you can ever think of. <br> 
                     <router-link to="/account" class="text-white">Login</router-link> and have an amazing experience.
@@ -116,5 +116,34 @@ export default {
         text-align: center;
         padding: 0 2rem;
         margin-top: .5rem;
+    }
+
+    @media screen and (max-width: 800px) {
+
+        .bottom-content ul {
+            flex-wrap: wrap !important;
+            overflow-y: auto;
+        }
+
+        .bottom-items {
+            width: 45%;
+            margin-bottom: 2rem;
+        }
+    }
+
+    @media screen and (max-width: 500px) {
+        .content-side {
+            padding: 3rem 0 !important;
+        }
+
+        .bottom-content {
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+        }
+
+        .bottom-items {
+            width: 100%;
+            margin-bottom: 2rem !important;
+        }
     }
 </style>

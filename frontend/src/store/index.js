@@ -58,6 +58,7 @@ export default createStore({
     }
   },
   actions: {
+    // login
     async login(context, payload){
       try {
         let userData = await axios.post(`${URL}user`, payload);
@@ -77,6 +78,8 @@ export default createStore({
         context.commit('setStatus', err.response?.status);    
       }
     },
+
+    // sign up
     async signUp(context, userData){
       console.log(userData);
       try {
@@ -124,6 +127,7 @@ export default createStore({
       }
     },
 
+    // fetch user
     async fetchUsers(context){
       try{  
         const res = await axios.get(`${URL}users`);
@@ -140,7 +144,6 @@ export default createStore({
         console.log(payload);
         const res = await axios.post(`${URL}items`, payload);
         if (res) {
-         
           let {msg} = res.data;
           context.commit('setMessage', msg);
         }
@@ -150,6 +153,7 @@ export default createStore({
       }
     },
 
+    // fetch courses
     async fetchCourses(context) {
       try{  
         const res = await axios.get(`${URL}items`);
@@ -182,6 +186,23 @@ export default createStore({
       }
     },
 
+    // update all user carts
+    async updateAllCartItems(context, user_id){
+      try{
+        let res = await axios.put(`${URL}user/${user_id}/cart`, {
+          status: 'purchased'
+        });
+        let {msg} = res.data;
+        if (res) {
+          console.log('Message: ', msg);
+          context.commit('setMessage', msg);
+        }
+      }
+      catch(err){
+        console.error(err);
+      }
+    },
+
     // update the cart
     async updateCart(context, payload){
       try{
@@ -199,6 +220,7 @@ export default createStore({
       }
     },
 
+    // get carts for user
     async getCartsForUser(context, payload){
       // /user/:id/carts
         try{  
@@ -209,6 +231,7 @@ export default createStore({
         }
     },
     
+    // toggle admin state
     async toggleAdminState(context, payload){
       let user_id = payload.user_id;
       const res = await axios.put(`${URL}admin/${user_id}`,payload);
@@ -220,7 +243,7 @@ export default createStore({
       
     },
 
-    // delete course: not working
+    // delete course
     async deleteCourse(context, course_id){
       console.log(course_id);
 
@@ -263,9 +286,10 @@ export default createStore({
     // delete cart item
     async deleteCartItem(context, payload){
       try {
-        const res = axios.delete(`${URL}user/${payload.user_id}/cart/${payload.cart_id}`);
+        console.log(payload);
+        const res = await axios.delete(`${URL}user/${payload.user_id}/cart/${payload.cart_id}`);
         if (res) {
-          const {msg} = res.data;
+          console.log(res);
           context.commit('setMessage', msg);
         }
       }

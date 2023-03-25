@@ -169,4 +169,48 @@ export default {
         font-weight: 600;
     }
 
+    @media screen and (max-width: 800px) {
+        .wrapper {
+            width: 90%;
+        }
+    }
+
+    @media screen and (max-width: 500px) {
+        .wrapper {
+            display: flex;
+            flex-direction: column;
+            height: auto;
+            
+            padding: 2rem !important;
+        }
+
+        img {
+            width: 50% !important;
+            height: 50% !important;
+            object-fit: cover;
+            background-position: 0;
+        }
+        .content {
+            width: 100%;
+            padding: 0 !important;
+        }
+
+        .description {
+            text-align: center;
+        }
+
+        .buttons {
+            width: 100% !important;
+            display: flex !important;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .title {
+            font-size: 30px;
+            text-align: center;
+            margin-top: 1rem;
+        }
+    }
+
 </style>

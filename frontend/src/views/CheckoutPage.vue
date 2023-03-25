@@ -1,4 +1,5 @@
 <template>
+    <SweetAlert :message="message" :showAlert="showAlert"/>
     <section class="checkout-page">
         <div class="heading d-flex align-items-end justify-content-center">
             <h1>Payment/Checkout</h1>
@@ -51,8 +52,13 @@
     </section>
 </template>
 <script>
+import SweetAlert from '@/components/SweetAlert.vue';
 import router from '@/router';
 export default {
+    components: {
+        SweetAlert
+    },
+
     data(){
         return {
             card: {
@@ -61,10 +67,16 @@ export default {
                 cardNumber: '1234567891231234',
                 personName: 'Name',
                 personSurname: 'Surname'
-            }
+            },
+            message: {
+                text: '',
+                type: ''
+            },
+            showAlert: false,
         }
     },
     methods: {
+     
         hideCardNumber(cardNumber){
             if (cardNumber.length === 16){
                 let i = 1;
@@ -84,6 +96,7 @@ export default {
                 return hidden
             }
         },
+     
         formatExpiryDate(expiryDate){
             if (expiryDate.length === 4){
                 let i = 1;
@@ -98,8 +111,39 @@ export default {
                 return formatted
             }
         },
+
         cancelPayment(){
             router.push('cart');
+        },
+        
+        // confirm payment
+        async confirmPayment(){
+            try {
+                if (this.$store.state.userCart?.length !== 0){
+                    let user_id = this.$store.state.loggedUser?.data.result.user_id;
+
+                    // check if the cart is empty, null or undefined
+                    await this.$store.dispatch('updateAllCartItems', user_id);
+                    // set alert message
+                    
+                    this.message.text = 'Purchase complete, items will be removed from cart.'
+                    this.message.type = 'success'
+                    this.$store.dispatch('getCartsForUser', {
+                        user_id: this.$store.state.loggedUser?.data.result.user_id
+                    })
+                }
+            }
+            catch(err){
+                console.error(err);
+                 // set alert message
+                this.message.text = this.$store.state.message
+                this.message.type = 'error'
+            }
+            // show the alert only for 3 seconds
+            this.showAlert = true;
+            setTimeout(()=>{
+                this.showAlert = false
+            }, 3000);
         }
     }
 }

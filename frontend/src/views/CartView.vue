@@ -7,7 +7,7 @@
         <div class="items my-0 py-0 " v-if="cartItems">
             <div class="wrapper w-100 d-flex flex-wrap gap-3 ">
 
-                <div data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Tooltip on top"
+                <div
                 :class="{'added' : itemsIDsToCheckout.includes(item.cart_id), 
                             '' : !itemsIDsToCheckout.includes(item.cart_id) }" 
                 class="item mb-0 mt-0 pt-0 pb-0" v-for="item in cartItems" :key="item"
@@ -21,6 +21,7 @@
                             <div class="item-buttons d-flex gap-1">
                                 <button @click.prevent="increaseQuantity(item)">+</button>
                                 <button @click.prevent="decreaseQuantity(item)">-</button>
+                                <button @click.prevent="deleteItem(item)" class="delete-button">delete</button>
                             </div> 
                         </div>
 
@@ -123,6 +124,8 @@ export default {
             await this.$store.dispatch('updateCart', payload);
             await this.$store.dispatch('getCartsForUser', payload.user_id)
         },
+
+        // decrease quantity
         async decreaseQuantity(item){
             let updatedQuantity = item.quantity;
             if (updatedQuantity !== 1) {
@@ -137,6 +140,7 @@ export default {
             await this.$store.dispatch('getCartsForUser',payload.user_id)
         },
         
+        // clear the cart for a user
         async clearCart(){
             let user_id = this.$store.state.loggedUser?.data.result.user_id;
             try {
@@ -154,6 +158,30 @@ export default {
                 this.showAlert = false;
                 location.reload();
             }, 3000);
+        },
+
+        // delete an single item from the cart
+        async deleteItem(item){
+            try {
+                console.log(item);
+                this.$store.dispatch('deleteCartItem', {
+                    user_id: this.$store.state.loggedUser?.data.result.user_id,
+                    cart_id: item.cart_id
+                });
+                // set alert state
+                this.message.text = 'Item has been successfully removed from the cart.'
+                this.message.type = 'success'
+            }
+            catch(err){
+                console.error(err);
+                // set alert state
+                this.message.text = 'Sorry, Could not delete item.'
+                this.message.type = 'error'
+            }
+            this.showAlert = true;
+            setTimeout(() => {
+                this.showAlert = false;    
+            },3000);
         }
     },
     
@@ -206,6 +234,12 @@ export default {
         background: linear-gradient(to top,rgb(25, 25, 25), rgb(34, 34, 34), rgb(94, 94, 94));
         border-radius: 2px;
         color: #fff;
+    }
+    
+    .delete-button {
+        width: auto !important;
+        font-size: 11px;
+        background: red !important;
     }
     
     .item-buttons button:hover {

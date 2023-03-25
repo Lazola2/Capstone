@@ -86,4 +86,28 @@ export default {
     .navbar {
         z-index: 1000;
     }
+
+    @media screen and (max-width: 900px) {
+       
+        /* nav bar*/
+        ul {
+            gap: 0 !important;
+            margin-top: 1rem;
+            
+        }
+        li {
+            text-align: center;
+            padding: 1rem 0;
+        }
+
+        li a {
+            width: 100%;
+            height: 100%;
+        }
+
+        li a:hover {
+            scale: 1.3;
+        }
+      
+    }
 </style>

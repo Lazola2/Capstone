@@ -15,15 +15,14 @@
             url(${this.selectedCourse.background})`}">
             <h1 class="text-white title">{{this.selectedCourse.title}}</h1>
             <p class="description">{{this.selectedCourse.description}} </p>
-            <div class="buttons w-100 d-flex justify-content-end px-2">  
+            <div class="buttons d-sm-none d-lg-flex w-100 d-flex justify-content-end px-2">  
                 <!-- <i class="bi bi-chevron-left text-white" @click.prevent="previousSlide"></i> -->
                 <i class="bi bi-chevron-right text-white" @click.prevent="nextSlide"></i>
             </div>
         </div>
-        <div class="content d-flex pt-4 px-4 flex-column">
- 
-            <h2 class="mb-5">{{selectedCourse.title}} Courses<br>Beginner to Advanced</h2>
-            <div class="buttons d-flex gap-2">
+        <div class="content  d-flex pt-4 px-4 flex-column">
+            <h2 class="mb-5 d-none d-sm-block">{{selectedCourse.title}} Courses<br>Beginner to Advanced</h2>
+            <div class="buttons  d-flex gap-2">
                 <button @click.prevent="sendToLogin" class="dark-btn btn-sign-in px-4 d-flex align-items-center justify-content-center gap-2">
                     Sign in<i class="bi bi-box-arrow-in-right"></i>
                 </button>
@@ -131,7 +130,7 @@ export default {
     }
 
     .topic-links > li {
-        font-size: 14px;
+        font-size: 18px;
         list-style: none;
         position: relative;
     }
@@ -142,7 +141,7 @@ export default {
 
     .title {
         margin-left: 4rem;
-        font-size: 60px;
+        font-size: 72px;
         margin-top: 5rem;
     }
 
@@ -229,6 +228,95 @@ export default {
     .btn-sign-in, .btn-sign-up {
         height: 30px;
         width: 130px;
+    }
+
+    @media screen and (max-width: 800px) {
+        .title {
+            font-size: 40px;
+            margin-left: 30px;
+        }
+        
+        .description {
+            margin-left: 30px;
+            width: 60%;
+        }
+
+        .content > h2 {
+            font-size: 25px;
+        }
+    }
+
+    @media screen and (max-width: 500px) {
+        .home-page {
+            display: grid;
+            grid-template-columns: 1fr !important;
+            grid-template-rows: 1fr  6fr repeat(2, 1.5fr) 2fr;
+            box-sizing: border-box;
+            padding: 0 1rem;
+        }
+
+        .slide-show {
+            grid-row: 2/4;
+            padding: 0 .5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap:1rem;
+        }
+
+        .slide-show .buttons {
+            display: none !important;
+        }
+
+        .description {
+            text-align: center;
+            margin: 0 !important;
+        }
+
+        .title {
+            margin: 0;
+        }
+
+        .content {
+            grid-row: 5/6;
+            grid-column: 1/3;
+            padding-top: 0 !important;
+            padding:  0 0 0 !important;
+        }
+
+        .topic-links {
+            display: none !important;
+        }
+
+        .button-holder {
+            grid-row : 4/5;
+            padding-top: 1rem !important;
+            display: flex;
+            flex-direction: column;
+            padding: 1rem 0 0 0 !important;
+        }
+
+        .content > .buttons {
+            width: 100%;
+            height: 100%;
+        }
+
+        .button-holder {
+            padding: 1.5rem;
+        }
+
+        .button-holder button{
+            height: 40px;
+            width: 100%;
+        }
+
+        .content > .buttons button {
+            width: 100%;
+            height: 40px;
+        }
+
+
     }
 
 </style>

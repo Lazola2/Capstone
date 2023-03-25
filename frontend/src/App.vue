@@ -44,9 +44,11 @@
   }
 
   .router-view-wrapper {
-    height: 91vh;
+    min-height: 91vh;
     margin-top: 9vh;
   }
+
+
 /*
   nav a.router-link-exact-active {
 

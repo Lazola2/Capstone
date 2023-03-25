@@ -80,9 +80,12 @@ export default {
         display: flex;
         align-items: center;
         justify-content: center;
+        
         background: 
             linear-gradient(rgba(0, 0, 0, 0.811),rgba(0, 0, 0, 0.811)),
             url(https://i.postimg.cc/sxFCDNYg/gg.jpg);
+        background-size: cover;
+        object-fit: cover;    
     }
     
     
