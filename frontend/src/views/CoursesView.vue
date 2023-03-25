@@ -507,4 +507,71 @@ export default {
         font-size: 15px;
     }
 
+    @media screen and (max-width:800px) {
+        .sub-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center !important;
+            gap: 1rem;
+            padding-top: 2rem !important;
+        }
+
+        .courses-section {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .courses-wrapper {
+       
+            margin-top: 6rem !important;
+            overflow-y: scroll !important;
+        }
+
+        .search-bar {
+            height: 40px !important;
+            
+        }
+        .search-bar input, .search-bar button  {
+            height: 30px !important;
+            padding: .5rem 0;
+        }
+
+        .course {
+            width: 30%;
+            height: 60%;
+        }
+        .search-list {
+            z-index: 1000;
+        }
+
+        .search-bar input {
+            padding: 0 1rem;
+        }
+    }
+
+    @media screen and (max-width: 500px){
+        .search-bar input {
+            width: 60%;
+        }
+
+        .course{
+            width: 100% !important;
+        }
+
+        .topic-links {
+            gap: 1rem !important;
+        }
+        .topic-links li {
+            font-size: 12px;
+        }
+        
+        .courses-wrapper {
+            justify-content : center;
+        }
+
+        .course {
+            width: 70%;
+        }
+    }
+
 </style>
