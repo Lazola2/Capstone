@@ -1,6 +1,8 @@
 <template>
   <NavBar/>
-  <router-view/>
+  <div class="router-view-wrapper">
+    <router-view/>
+  </div>
   <Footer/>
 </template>
 
@@ -39,6 +41,11 @@
   nav a {
     color: black;
     text-decoration: none;
+  }
+
+  .router-view-wrapper {
+    height: 91vh;
+    margin-top: 9vh;
   }
 /*
   nav a.router-link-exact-active {
