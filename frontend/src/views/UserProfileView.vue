@@ -197,7 +197,7 @@ export default {
 
     .top {
         background: 
-            linear-gradient(rgba(0,0,0,.9), rgba(0,0,0,.9)),
+            linear-gradient(rgba(0,0,0,.7), rgba(0,0,0,.7)),
             url(https://i.postimg.cc/fy0crY58/person.jpg);
         background-size: cover;
         background-repeat: none;
